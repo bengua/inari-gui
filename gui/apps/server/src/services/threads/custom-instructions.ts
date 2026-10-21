@@ -23,6 +23,20 @@ export function cloudroomSystemPrompt(db: DbConnection): string | undefined {
 }
 type Input = { input: PromptInput[]; inputGroups?: PromptInput[][] };
 
+/** Plugins whose instructions also reach Cloud threads, in their system prompt. Local threads get every plugin's
+ *  (thread-runtime-config.ts); others, like Connect's remote-viewing hint, only fit Local threads. */
+const CLOUD_INSTRUCTION_PLUGINS = new Set(["organization"]);
+export function cloudPluginInstructions(context: Context): string | undefined {
+  const sections = listPluginInstructionContributions()
+    .filter(({ pluginId }) => CLOUD_INSTRUCTION_PLUGINS.has(pluginId))
+    .flatMap(({ pluginId, provider }) => {
+      let text: string | null = null;
+      try { text = provider(context); } catch { return []; }
+      return text?.trim() ? [`The following instructions come from the Cloudroom plugin "${pluginId}":\n${text.slice(0, PLUGIN_INSTRUCTION_MAX_CHARS)}`] : [];
+    });
+  return sections.length ? sections.join("\n\n") : undefined;
+}
+
 export function resolveCustomInstructions(context: Context): string {
   const contribution = listPluginInstructionContributions().find(
     ({ pluginId }) => pluginId === CUSTOM_INSTRUCTIONS_PLUGIN_ID,

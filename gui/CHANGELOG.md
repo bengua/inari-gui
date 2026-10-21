@@ -2,6 +2,19 @@
 
 Also on [cloudroom.dev/changelog](https://www.cloudroom.dev/changelog).
 
+## 113
+
+Git diff panel for Cloud threads (2026-10-20)
+
+### Changes
+
+- Cloud threads now have a Git info panel and Diff tab, just like Local threads.
+- When your Mac is unavailable, Cloud agents now see why.
+- Cloud usage shows agent hours everywhere, so the app and pricing page match.
+- Running background tasks use a calm static look, so long tasks no longer burn CPU.
+- The side chat button sits under the panel toggle, and typing goes straight into the side chat.
+- New custom icons for projects, computers, and branches.
+
 ## 112
 
 Fork between Local and Cloud (2026-10-20)

@@ -48,7 +48,7 @@ export type SandboxLogin = "claude" | "codex" | "pi" | "github" | "cursor" | "op
 export type SandboxProject = { id: string; repository: string | null; folder: string };
 const RECHECK_MS = 60_000;
 export type CloudQueue = { position: number; total: number; regionBlocked: boolean };
-/** A Free or Pro account's 30-day usage, for the sidebar upgrade card. */
+/** A Free or Pro account's 30-day usage, for the sidebar upgrade card. The website sends `cpu_hours` as agent hours (ADR 0275). */
 export type PlanUsage = { plan: "free" | "pro"; agents: number; agentsLimit: number; cpuHours: number | null; cpuHoursLimit: number };
 const USAGE_LIMIT = "cloud_usage_limit";
 const AGENT_LIMIT = "cloud_agent_limit";
@@ -530,6 +530,13 @@ export class SandboxDirectory {
   }
 
   private awake = new Map<string, { origin: string; token: string }>();
+  awakeSandboxes(): { thread: string; url: string; token: string }[] {
+    const awake = new Map([...this.awake].map(([thread, { origin, token }]) => [thread, { thread, url: origin, token }]));
+    for (const view of this.views.values()) {
+      if (view.state === "awake" && view.origin && view.token && Date.now() - (this.wakeStarts.get(view.thread) ?? 0) < 120_000) awake.set(view.thread, { thread: view.thread, url: view.origin, token: view.token });
+    }
+    return [...awake.values()];
+  }
   private awakeNext = 0;
   private awakeEvery = 60_000;
   private awakeIssue: CloudroomError | null = null;
@@ -638,6 +645,8 @@ export class SandboxDirectory {
   private readonly capped = new Set<string>();
   /** Whether this new thread was refused for its plan's launch cap; cleared when it starts. */
   agentLimited(thread: string): boolean { return this.capped.has(thread); }
+  /** Whether this run last saw the sandbox awake, without asking the website. */
+  isAwake(thread: string): boolean { return this.views.get(thread)?.state === "awake" || this.awake.has(thread); }
 
   private plan: string | null = null;
   currentPlan(): string | null { return this.plan; }
@@ -767,6 +776,11 @@ export class SandboxDirectory {
   /** Cloud automations live on the website, which runs them while this Mac is off (ADR 0212). */
   async automations(body: Record<string, unknown>): Promise<unknown> {
     return this.call(body, "automations");
+  }
+
+  /** Organizations live on the website (docs/scopes/organizations.md); the Organization plugin's requests pass through. */
+  async org(body: Record<string, unknown>): Promise<unknown> {
+    return this.call(body, "org");
   }
 
   /** MCP servers in the cloud, as of the last Cloud environment answer. */
