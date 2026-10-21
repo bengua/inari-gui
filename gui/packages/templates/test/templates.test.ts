@@ -109,6 +109,53 @@ describe("@cloudroom/templates", () => {
     );
   });
 
+  it("renders if blocks only when their variable is set", () => {
+    const variables = {
+      title: "Fix login",
+      firstMessage: "Login fails",
+      recentMessages: "- Login fails",
+    };
+    const bare = renderTemplate("generateThreadPurpose", variables);
+    const full = renderTemplate("generateThreadPurpose", {
+      ...variables,
+      previousPurpose: "Fixing login (50% done)",
+      agentReply: "Use $& and {{title}}.",
+    });
+
+    expect(bare.slice(bare.indexOf("Update it when"))).toBe(
+      [
+        "Update it when the user changed direction.",
+        "",
+        "Thread name: Fix login",
+        "",
+        "The user's first message:",
+        "Login fails",
+        "",
+        "The user's latest messages:",
+        "- Login fails",
+      ].join("\n"),
+    );
+    expect(full.slice(full.indexOf("Update it when"))).toBe(
+      [
+        "Update it when the user changed direction.",
+        "",
+        "Previous note (reuse its wording if the goal and state did not change):",
+        "Fixing login (50% done)",
+        "",
+        "Thread name: Fix login",
+        "",
+        "The user's first message:",
+        "Login fails",
+        "",
+        "The user's latest messages:",
+        "- Login fails",
+        "",
+        "The agent's latest reply:",
+        "Use $& and {{title}}.",
+      ].join("\n"),
+    );
+  });
+
   it("renders all templates without error", () => {
     const templates = templateDefinitions;
 

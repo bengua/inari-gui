@@ -2,6 +2,17 @@
 
 Also on [cloudroom.dev/changelog](https://www.cloudroom.dev/changelog).
 
+## 114
+
+Security fixes and a leaner app (2026-10-21)
+
+### Changes
+
+- Security fixes.
+- The app now runs on Electron 44.9.3.
+- Cloud threads run on the latest Core.
+- Fewer third-party libraries, replaced with small built-in code.
+
 ## 113
 
 Git diff panel for Cloud threads (2026-10-20)
