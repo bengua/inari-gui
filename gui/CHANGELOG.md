@@ -2,6 +2,20 @@
 
 Also on [cloudroom.dev/changelog](https://www.cloudroom.dev/changelog).
 
+## 115
+
+Organizations in the app (2026-10-21)
+
+### Changes
+
+- A new Organization page in the app, with Settings and Threads tabs.
+- For team members, the Organization plugin turns on by itself.
+- Team and repo rules reach every thread in your team's repos, never your personal work.
+- Organization settings apply as soon as you save them.
+- Signing out of a Mac now also ends its access to your other Macs.
+- Security fixes.
+- Cloud threads run on the latest Core.
+
 ## 114
 
 Security fixes and a leaner app (2026-10-21)

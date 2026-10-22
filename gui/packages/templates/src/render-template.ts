@@ -11,13 +11,14 @@ const templateBodyById = Object.fromEntries(
 const IF_BLOCK =
   /^[ \t]*\{\{#if (\w+)\}\}[ \t]*\r?\n([\s\S]*?)^[ \t]*\{\{\/if\}\}[ \t]*(?:\r?\n|$)/gmu;
 const VARIABLE = /\{\{(\w+)\}\}/gu;
+const UNSUPPORTED = /\\\{\{|\{\{(?!\w+\}\})|\{\{else\}\}/u;
 
 export function renderTemplate<TTemplateId extends TemplateId>(
   templateId: TTemplateId,
   variables: TemplateVariables[TTemplateId],
 ): string {
   const body = templateBodyById[templateId];
-  if (/\{\{(?!\w+\}\})/u.test(body.replace(IF_BLOCK, "$2"))) {
+  if (UNSUPPORTED.test(body.replace(IF_BLOCK, "$2"))) {
     throw new Error(`Template "${templateId}" uses unsupported syntax`);
   }
   const values: Record<string, string | undefined> = variables;

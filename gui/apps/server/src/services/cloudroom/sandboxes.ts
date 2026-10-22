@@ -783,6 +783,22 @@ export class SandboxDirectory {
     return this.call(body, "org");
   }
 
+  private member: { userId: string; value: boolean; at: number } | null = null;
+  /** Whether the account is in an organization (ADR 0277): false when signed out, null when the website can't say.
+   *  Asks the website at once for a newly signed-in account, then every 15 minutes for members and every hour for
+   *  everyone else. */
+  async orgMember(): Promise<boolean | null> {
+    const account = await this.account();
+    if (!account) { this.member = null; return false; }
+    const known = this.member?.userId === account.userId ? this.member : null;
+    if (known && Date.now() - known.at < (known.value ? 15 : 60) * 60_000) return known.value;
+    try {
+      const value = z.object({ member: z.boolean() }).parse(await this.call({ action: "member" }, "org")).member;
+      this.member = { userId: account.userId, value, at: Date.now() };
+      return value;
+    } catch { return known?.value ?? null; }
+  }
+
   /** MCP servers in the cloud, as of the last Cloud environment answer. */
   private mcpNames: string[] | null = null;
   private mcpAt = 0;

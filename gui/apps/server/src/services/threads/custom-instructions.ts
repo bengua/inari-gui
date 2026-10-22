@@ -12,6 +12,9 @@ import { listPluginInstructionContributions } from "../plugins/plugin-agent-cont
 
 export const CUSTOM_INSTRUCTIONS_PLUGIN_ID = "custom-instructions";
 export const PLUGIN_INSTRUCTION_MAX_CHARS = 4096;
+/** The Organization plugin carries the team rules and one repo's rules, up to 4,000 characters each (ADR 0277). */
+const ORG_INSTRUCTION_MAX_CHARS = 8_600;
+export const pluginInstructionMaxChars = (pluginId: string) => (pluginId === "organization" ? ORG_INSTRUCTION_MAX_CHARS : PLUGIN_INSTRUCTION_MAX_CHARS);
 
 type Context = { threadId: string; projectId: string };
 
@@ -32,7 +35,7 @@ export function cloudPluginInstructions(context: Context): string | undefined {
     .flatMap(({ pluginId, provider }) => {
       let text: string | null = null;
       try { text = provider(context); } catch { return []; }
-      return text?.trim() ? [`The following instructions come from the Cloudroom plugin "${pluginId}":\n${text.slice(0, PLUGIN_INSTRUCTION_MAX_CHARS)}`] : [];
+      return text?.trim() ? [`The following instructions come from the Cloudroom plugin "${pluginId}":\n${text.slice(0, pluginInstructionMaxChars(pluginId))}`] : [];
     });
   return sections.length ? sections.join("\n\n") : undefined;
 }
