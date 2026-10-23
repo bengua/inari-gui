@@ -63,7 +63,7 @@ import {
   LoopGroupDivider,
 } from "./templates-view.js";
 import type { CloudAutomation, CloudAutomationActions } from "./cloud-view.js";
-import { CloudLoopDialog } from "./cloud-loop-dialog.js";
+import { CloudLoopDialog } from "./loop-dialog.js";
 import {
   LoopReviewView,
   reviewableItems,
@@ -1108,6 +1108,7 @@ export function AutomationOverviewView({
   cloud,
   review,
   templates,
+  localDialog,
 }: {
   entries: OverviewEntry[] | null;
   error: string | null;
@@ -1129,6 +1130,13 @@ export function AutomationOverviewView({
   };
   review?: LoopReviewState;
   templates?: LoopTemplatesState;
+  localDialog?: {
+    automationId: string;
+    render: (
+      priority: LoopPriority,
+      onPriorityChange: (priority: LoopPriority) => void,
+    ) => ReactNode;
+  };
 }) {
   const [query, setQuery] = useState("");
   const [reviewLayout, setReviewLayout] = useState<ReviewLayout>("list");
@@ -1604,7 +1612,15 @@ export function AutomationOverviewView({
         <ResourceCollectionViewport scrollId="automations-templates">
           <LoopTemplatesView
             entries={entries}
-            templates={templates}
+            cloudRows={cloudRows}
+            templates={{
+              ...templates,
+              onAdd: async (template, projectIds, target) => {
+                const keys = await templates.onAdd(template, projectIds, target);
+                for (const key of keys) setPriority(key, template.priority);
+                return keys;
+              },
+            }}
             renderAgent={(agent) => (
               <AutomationAgentLine
                 agents={[agent]}
@@ -1632,6 +1648,14 @@ export function AutomationOverviewView({
           onClose={() => setOpenCloudId(null)}
         />
       ) : null}
+      {localDialog
+        ? localDialog.render(
+            priorities[`local:${localDialog.automationId}`] ??
+              DEFAULT_LOOP_PRIORITY,
+            (priority) =>
+              setPriority(`local:${localDialog.automationId}`, priority),
+          )
+        : null}
     </ResourceCollectionPage>
   );
 }

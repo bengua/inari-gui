@@ -47,8 +47,7 @@ export const LOOP_TEMPLATES: readonly LoopTemplate[] = [
   {
     id: "security-sweep",
     name: "Security sweep",
-    description:
-      "Reviews one area of your code for missing access checks, data leaks, and exposed secrets.",
+    description: "Finds security holes in your code. Checks one area per run.",
     category: "security",
     priority: 1,
     icon: "SecurityCheck",
@@ -64,7 +63,7 @@ In that area, look for missing auth or access checks, data one user can see that
     id: "dependency-sweep",
     name: "Supply-chain security sweep",
     description:
-      "Checks the exact package versions you lock against new vulnerability and malware alerts.",
+      "Checks your packages for new security alerts. Flags hacked or unsafe versions.",
     category: "security",
     priority: 1,
     icon: "PackageReceive",
@@ -79,7 +78,7 @@ Find every lockfile in this repo (package-lock.json, pnpm-lock.yaml, yarn.lock, 
     id: "dep-watch",
     name: "Dep watch",
     description:
-      "Watches the runtimes and frameworks you run for new critical security fixes, and tells you what to update.",
+      "Watches your frameworks for urgent security fixes. Tells you what to update.",
     category: "security",
     priority: 2,
     icon: "PackageReceive",
@@ -94,7 +93,7 @@ List the runtimes and frameworks this repo runs on, with their versions (for exa
     id: "web-security-test",
     name: "Web security test",
     description:
-      "Probes your own live website like an outside attacker would, and reports only real holes.",
+      "Attacks your live site like a hacker. Reports only real holes.",
     category: "security",
     priority: 3,
     icon: "Globe",
@@ -108,8 +107,7 @@ Test it from outside like a careful attacker: auth and session handling, access 
   {
     id: "simplify-sweep",
     name: "Simplify sweep",
-    description:
-      "Finds dead code, duplication, and overbuilt parts, one area of your code at a time.",
+    description: "Finds dead and duplicate code. Checks one area per run.",
     category: "code-health",
     priority: 2,
     icon: "Clean",
@@ -125,7 +123,7 @@ In that area, find dead code, duplication, needless abstractions, and code that 
     id: "test-gap-hunt",
     name: "Test gap hunt",
     description:
-      "Finds the one missing test your riskiest code needs, then tries to talk itself out of it.",
+      "Finds risky code with no tests. Suggests the one test to add.",
     category: "code-health",
     priority: 2,
     icon: "Beaker",
@@ -141,7 +139,7 @@ Find the single most important missing test in that area: code where a silent br
     id: "dependency-diet",
     name: "Dependency diet",
     description:
-      "Finds one dependency at a time, biggest first, that a built-in or a few lines could replace.",
+      "Finds packages you don't need. Replaces one with a few lines.",
     category: "code-health",
     priority: 3,
     icon: "Layers",
@@ -156,7 +154,7 @@ List this repo's direct dependencies, biggest and least used first. Pick the one
     id: "side-effects-review",
     name: "Side effects review",
     description:
-      "Reviews what landed on main since the last run for security holes, broken flows, and lost work.",
+      "Reviews what just landed on main. Catches bugs and security holes.",
     category: "reviews",
     priority: 1,
     icon: "GitMerge",
@@ -171,8 +169,7 @@ Hunt the unintended side effects of those changes: security holes, usage or bill
   {
     id: "pr-issue-triage",
     name: "PR & issue triage",
-    description:
-      "Sorts new GitHub issues and outside pull requests, and flags the low-effort ones.",
+    description: "Sorts new GitHub issues and PRs. Flags the low-effort ones.",
     category: "reviews",
     priority: 3,
     icon: "GitPullRequest",
@@ -187,7 +184,7 @@ List issues and pull requests opened or updated in the last 4 hours. For each, g
     id: "payments-review",
     name: "Payments review",
     description:
-      "Checks your billing code for free-usage holes, double charges, and refund gaps.",
+      "Checks your billing code for money bugs. Finds free-usage holes and double charges.",
     category: "reviews",
     priority: 4,
     icon: "Lock",
@@ -202,7 +199,7 @@ Find this repo's billing and plan code (checkout, webhooks, subscriptions, plan 
     id: "database-health",
     name: "Database health",
     description:
-      "A read-only check of your database: size, slow queries, connections, and errors.",
+      "Checks your database health. Read-only, so it never changes data.",
     category: "ops",
     priority: 4,
     icon: "ChartColumn",
@@ -217,7 +214,7 @@ Find a read-only database URL in this project's .env files. If there is none, sa
     id: "uptime-errors",
     name: "Uptime & errors",
     description:
-      "Checks that your site is up and its logs are clean, and wakes you only when something broke.",
+      "Checks your site is up and error-free. Pings you only when it breaks.",
     category: "ops",
     priority: 4,
     icon: "AlertTriangle",
@@ -231,8 +228,7 @@ Find this project's production URL and health endpoints in the README, config, o
   {
     id: "thread-cleanup",
     name: "Thread cleanup",
-    description:
-      "Archives this project's finished threads so only real work stays in your sidebar.",
+    description: "Archives finished threads. Keeps your sidebar clean.",
     category: "ops",
     priority: 2,
     icon: "Archive",
@@ -247,8 +243,7 @@ Then write a short list of what you archived and why, and archive this thread wi
   {
     id: "tweet-scout",
     name: "Tweet scout",
-    description:
-      "Finds the 3 best tweets in your niche to reply to. Never posts for you.",
+    description: "Finds 3 tweets worth replying to. Never posts for you.",
     category: "growth",
     priority: 4,
     icon: "Sent",
@@ -264,7 +259,7 @@ Leave this thread open for the user.`,
     id: "research-digest",
     name: "Research digest",
     description:
-      "The new AI papers worth your time, explained in plain English.",
+      "Picks the AI papers worth reading. Explains them in plain English.",
     category: "growth",
     priority: 4,
     icon: "FileText",

@@ -2,6 +2,19 @@
 
 Also on [cloudroom.dev/changelog](https://www.cloudroom.dev/changelog).
 
+## 118
+
+Cloud loop templates (2026-10-23)
+
+### Changes
+
+- Templates now make Cloud loops by default, with a Cloud | Local switch.
+- Local and Cloud loops now open the same loop dialog.
+- Loops added from a template keep the template's priority.
+- The loop dialog keeps your unsaved edits when new runs arrive.
+- Template cards are easier to read, and long repo paths no longer hide names.
+- Cloud agents now recognize when a command was killed for running out of memory.
+
 ## 117
 
 Loop templates (2026-10-22)

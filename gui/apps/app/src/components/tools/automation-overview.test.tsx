@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CompactViewportOverrideProvider } from "@cloudroom/shared-ui/hooks/use-compact-viewport";
 import { AutomationOverviewView } from "bb-plugin-automations/overview-view";
@@ -675,6 +681,43 @@ describe("AutomationOverviewView", () => {
     expect(
       screen.getByRole("button", { name: /^Priority 4 for Nightly digest/ }),
     ).toBeTruthy();
+    window.localStorage.clear();
+  });
+
+  it("gives loops added from a template the template's priority", async () => {
+    window.localStorage.clear();
+    const onAdd = vi.fn(async () => ["cloud:loop_new"]);
+    render(
+      <AutomationOverviewView
+        entries={[]}
+        error={null}
+        onRetry={() => {}}
+        onOpenDetail={() => {}}
+        onEnabledChange={async () => {}}
+        onCreateViaChat={() => {}}
+        activeMode="templates"
+        onModeChange={() => {}}
+        templates={{
+          projects: [{ id: "proj_1", name: "Repo one", path: "/repo-one" }],
+          onAdd,
+        }}
+      />,
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Add Security sweep to repos" }),
+    );
+    fireEvent.click(await screen.findByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Add to 1 repo" }));
+    await waitFor(() =>
+      expect(
+        JSON.parse(window.localStorage.getItem("cloudroom-loops:priorities")!),
+      ).toEqual({ "cloud:loop_new": 1 }),
+    );
+    expect(onAdd).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "Security sweep" }),
+      ["proj_1"],
+      "cloud",
+    );
     window.localStorage.clear();
   });
 

@@ -13,6 +13,7 @@ import type {
   AutomationAgentSummary,
   AutomationsOverviewResponse,
 } from "./src/rpc-types.js";
+import type { CloudAutomation } from "./cloud-view.js";
 import { formatAutomationTrigger } from "./lib/format-schedule.js";
 import {
   LOOP_TEMPLATES,
@@ -28,10 +29,16 @@ export interface TemplateProject {
   path: string | null;
 }
 
+export type LoopTarget = "cloud" | "local";
+
 export interface LoopTemplatesState {
   projects: readonly TemplateProject[] | null;
-  /** Creates one loop per project. Resolves once every create has settled. */
-  onAdd: (template: LoopTemplate, projectIds: string[]) => Promise<void>;
+  /** Creates one loop per project, Cloud or Local. Resolves with the new loops' priority keys once every create has settled. */
+  onAdd: (
+    template: LoopTemplate,
+    projectIds: string[],
+    target: LoopTarget,
+  ) => Promise<string[]>;
 }
 
 type OverviewEntry = AutomationsOverviewResponse["automations"][number];
@@ -87,8 +94,10 @@ function RepoLetter({ name }: { name: string }) {
   );
 }
 
-function shortPath(path: string | null): string {
-  return path?.replace(/^\/(?:Users|home)\/[^/]+/u, "~") ?? "";
+function parentFolder(path: string | null): string {
+  const short = path?.replace(/^\/(?:Users|home)\/[^/]+/u, "~") ?? "";
+  const cut = short.lastIndexOf("/");
+  return cut > 0 ? short.slice(0, cut) : short;
 }
 
 function TemplateRepoPicker({
@@ -105,6 +114,7 @@ function TemplateRepoPicker({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<ReadonlySet<string>>(new Set());
+  const [target, setTarget] = useState<LoopTarget>("cloud");
   const [pending, setPending] = useState(false);
   const on = activeIds.size > 0;
   const choosable = (projects ?? []).filter((p) => !activeIds.has(p.id));
@@ -121,7 +131,7 @@ function TemplateRepoPicker({
     });
   const submit = () => {
     setPending(true);
-    void onAdd(template, [...selected]).finally(() => {
+    void onAdd(template, [...selected], target).finally(() => {
       setPending(false);
       setSelected(new Set());
       setOpen(false);
@@ -152,10 +162,7 @@ function TemplateRepoPicker({
           <Icon name="ChevronDown" className="size-3" aria-hidden />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 p-1.5">
-        <p className="px-2 pb-2 pt-1 text-xs leading-snug text-muted-foreground">
-          {template.description}
-        </p>
+      <PopoverContent align="end" className="w-88 p-1.5">
         <div className="relative px-0.5">
           <Icon
             name="Search"
@@ -183,7 +190,7 @@ function TemplateRepoPicker({
             </button>
           ) : null}
         </div>
-        <div className="max-h-64 overflow-y-auto">
+        <div className="max-h-80 overflow-y-auto">
           {visible.map((project) => {
             const active = activeIds.has(project.id);
             const checked = active || selected.has(project.id);
@@ -191,7 +198,7 @@ function TemplateRepoPicker({
               <label
                 key={project.id}
                 className={cn(
-                  "flex h-8 cursor-pointer items-center gap-2.5 rounded-md px-2 text-sm",
+                  "flex h-11 cursor-pointer items-center gap-2.5 rounded-md px-2",
                   active ? "cursor-default" : "hover:bg-state-hover",
                   checked && !active && "bg-primary/7",
                 )}
@@ -203,17 +210,20 @@ function TemplateRepoPicker({
                     toggle(project.id, value === true)
                   }
                 />
-                <span className="min-w-0 truncate">{project.name}</span>
-                <span
-                  className={cn(
-                    "ml-auto shrink-0 truncate pl-2 text-2xs",
-                    active
-                      ? "text-success"
-                      : "font-mono text-subtle-foreground",
-                  )}
-                >
-                  {active ? "running" : shortPath(project.path)}
+                <RepoLetter name={project.name} />
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="truncate text-sm font-medium text-foreground">
+                    {project.name}
+                  </span>
+                  <span className="truncate text-left font-mono text-2xs text-subtle-foreground [direction:rtl]">
+                    <bdi>{parentFolder(project.path)}</bdi>
+                  </span>
                 </span>
+                {active ? (
+                  <span className="shrink-0 pl-2 text-2xs text-success">
+                    running
+                  </span>
+                ) : null}
               </label>
             );
           })}
@@ -224,9 +234,40 @@ function TemplateRepoPicker({
           ) : null}
         </div>
         <div className="mt-1 flex items-center gap-2 border-t border-foreground/10 px-1 pt-2">
-          <span className="pl-1 text-xs text-subtle-foreground">
-            {selected.size} selected
-          </span>
+          <div
+            role="group"
+            aria-label="Runs on"
+            className="flex rounded-md bg-muted/50 p-0.5"
+          >
+            {(["cloud", "local"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={target === option}
+                disabled={pending}
+                title={
+                  option === "cloud"
+                    ? "Runs on Cloudroom's servers, even while this Mac is off"
+                    : "Runs on this Mac, only while it is awake"
+                }
+                onClick={() => setTarget(option)}
+                className={cn(
+                  "flex h-6 cursor-pointer items-center gap-1 rounded-[5px] px-2 text-xs text-muted-foreground transition-colors hover:text-foreground",
+                  target === option && "bg-state-hover text-foreground",
+                )}
+              >
+                <Icon
+                  name={option === "cloud" ? "Cloud" : "Laptop"}
+                  className={cn(
+                    "size-3.5",
+                    target === option && option === "cloud" && "text-primary",
+                  )}
+                  aria-hidden
+                />
+                {option === "cloud" ? "Cloud" : "Local"}
+              </button>
+            ))}
+          </div>
           <Button
             type="button"
             size="sm"
@@ -235,7 +276,9 @@ function TemplateRepoPicker({
             onClick={submit}
           >
             {pending
-              ? "Adding…"
+              ? target === "cloud"
+                ? "Starting…"
+                : "Adding…"
               : `Add to ${selected.size} repo${selected.size === 1 ? "" : "s"}`}
           </Button>
         </div>
@@ -261,89 +304,96 @@ function TemplateCard({
 }) {
   const on = repos.length > 0;
   return (
-    <div
-      title={template.description}
-      className="grid min-w-0 grid-cols-[1.5rem_minmax(0,1fr)_auto] items-start gap-3 rounded-lg border border-border bg-surface-raised px-3 py-3"
-    >
-      <span className="flex size-6 items-center justify-center">
-        <Icon
-          name={template.icon}
-          className={cn(
-            "size-4",
-            on ? "text-primary" : "text-muted-foreground/70",
-          )}
-          aria-hidden
-        />
+    <div className="grid min-w-0 grid-cols-[1.25rem_minmax(0,1fr)_auto] content-start items-center gap-x-2.5 rounded-lg border border-border bg-surface-raised p-3.5">
+      <Icon
+        name={template.icon}
+        className={cn(
+          "size-4",
+          on ? "text-primary" : "text-muted-foreground/70",
+        )}
+        aria-hidden
+      />
+      <span className="truncate text-base font-semibold text-foreground">
+        {template.name}
       </span>
-      <span className="min-w-0">
-        <span className="block truncate text-sm font-medium text-foreground">
-          {template.name}
+      <TemplateRepoPicker
+        template={template}
+        projects={projects}
+        activeIds={activeIds}
+        onAdd={onAdd}
+      />
+      <p className="col-span-2 col-start-2 mt-1 text-sm leading-snug text-muted-foreground">
+        {template.description}
+      </p>
+      <span className="col-span-2 col-start-2 mt-3 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground/80">
+        {renderAgent({
+          providerId: template.providerId,
+          model: template.model,
+          reasoningLevel: template.reasoningLevel,
+        })}
+        <span aria-hidden className="text-muted-foreground/40">
+          ·
         </span>
-        <span className="mt-1.5 flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground/80">
-          {renderAgent({
-            providerId: template.providerId,
-            model: template.model,
-            reasoningLevel: template.reasoningLevel,
-          })}
-        </span>
-        <span className="mt-1 block truncate text-xs text-muted-foreground/80">
+        <span className="shrink-0">
           {formatAutomationTrigger({
             triggerType: "schedule",
             cron: template.cron,
             timezone: "UTC",
-          })}
+          }).replace(/^On the hour, every/u, "Every")}
         </span>
-        {on ? (
-          <span className="mt-2 flex flex-wrap gap-1">
-            {repos.slice(0, 3).map((name) => (
-              <span
-                key={name}
-                className="inline-flex h-5 items-center gap-1 rounded-[5px] bg-foreground/7 pl-0.5 pr-1.5 text-[11.5px] text-foreground"
-              >
-                <RepoLetter name={name} />
-                {name}
-              </span>
-            ))}
-            {repos.length > 3 ? (
-              <span className="inline-flex h-5 items-center rounded-[5px] bg-foreground/7 px-1.5 text-[11.5px] text-subtle-foreground">
-                +{repos.length - 3} more
-              </span>
-            ) : null}
-          </span>
-        ) : null}
       </span>
-      <span className="self-center">
-        <TemplateRepoPicker
-          template={template}
-          projects={projects}
-          activeIds={activeIds}
-          onAdd={onAdd}
-        />
-      </span>
+      {on ? (
+        <span className="col-span-2 col-start-2 mt-2 flex flex-wrap gap-1">
+          {repos.slice(0, 3).map((name) => (
+            <span
+              key={name}
+              className="inline-flex h-5 items-center gap-1 rounded-[5px] bg-foreground/7 pl-0.5 pr-1.5 text-[11.5px] text-foreground"
+            >
+              <RepoLetter name={name} />
+              {name}
+            </span>
+          ))}
+          {repos.length > 3 ? (
+            <span className="inline-flex h-5 items-center rounded-[5px] bg-foreground/7 px-1.5 text-[11.5px] text-subtle-foreground">
+              +{repos.length - 3} more
+            </span>
+          ) : null}
+        </span>
+      ) : null}
     </div>
   );
 }
 
 export function LoopTemplatesView({
   entries,
+  cloudRows,
   templates,
   renderAgent,
 }: {
   entries: readonly OverviewEntry[] | null;
+  cloudRows: readonly CloudAutomation[];
   templates: LoopTemplatesState;
   renderAgent: (agent: AutomationAgentSummary) => ReactNode;
 }) {
   const [category, setCategory] = useState<TemplateCategory | "all">("all");
-  // Where each template runs: loops that kept its name, per project.
+  // Where each template runs: Local and Cloud loops that kept its name, per project.
   const running = useMemo(() => {
     const byName = new Map<string, Map<string, string>>();
-    for (const { automation, project } of entries ?? []) {
-      const projects = byName.get(automation.name) ?? new Map<string, string>();
-      projects.set(project.id, project.name);
-      byName.set(automation.name, projects);
+    const add = (name: string, projectId: string, projectName: string) => {
+      const projects = byName.get(name) ?? new Map<string, string>();
+      projects.set(projectId, projectName);
+      byName.set(name, projects);
+    };
+    for (const { automation, project } of entries ?? [])
+      add(automation.name, project.id, project.name);
+    for (const automation of cloudRows) {
+      const project = templates.projects?.find(
+        (p) => p.id === automation.project_id,
+      );
+      if (project) add(automation.name, project.id, project.name);
     }
     return byName;
-  }, [entries]);
+  }, [entries, cloudRows, templates.projects]);
   const shown = LOOP_TEMPLATES.filter(
     (t) => category === "all" || t.category === category,
   );

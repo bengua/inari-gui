@@ -21,6 +21,7 @@ export type CloudAutomation = {
   prompt?: string;
   new_thread?: boolean;
   agent?: AutomationAgentSummary | null;
+  project_id?: string | null;
 };
 export type CloudAutomationChanges = {
   prompt?: string;
@@ -76,6 +77,7 @@ export async function replaceWebhookUrl(
 export function useCloudAutomations(): {
   rows: CloudAutomation[];
   actions: CloudAutomationActions;
+  reload: () => Promise<void>;
 } {
   const rpc = useRpc<typeof automationRpcContract>();
   const navigate = useBbNavigate();
@@ -144,5 +146,5 @@ export function useCloudAutomations(): {
     }),
     [act, call, load, navigate],
   );
-  return { rows, actions };
+  return { rows, actions, reload: load };
 }
