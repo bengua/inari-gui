@@ -2,6 +2,20 @@
 
 Also on [cloudroom.dev/changelog](https://www.cloudroom.dev/changelog).
 
+## 117
+
+Loop templates (2026-10-22)
+
+### Changes
+
+- A new Templates tab in Loops: ready-made loops you add to any of your repos in a few clicks.
+- Templates are sorted by category and by priority, from P1 Essential to P4 Niche.
+- The Loops Overview is now one list, grouped by priority, with turned-off loops at the bottom.
+- Click a Cloud loop to see and edit its details. Failed loops show a Failed tag.
+- Drag a thread onto another project in the sidebar to move it there.
+- Archiving, sending, pinning, and changing effort now feel instant.
+- Cloud threads run on the latest Core.
+
 ## 116
 
 Move threads between projects (2026-10-22)

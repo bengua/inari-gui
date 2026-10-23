@@ -3,9 +3,11 @@ import type { ReactNode } from "react";
 import { buildAutomationEditThreadPrompt } from "@cloudroom/shared-ui/resource-edit-prompt";
 import {
   definePluginApp,
+  experimental_useProviders as useProviders,
   useBbNavigate,
   useRealtime,
   useRpc,
+  useSdk,
   type PluginNavPanelProps,
 } from "@get-bb/plugin-sdk/app";
 import type { automationRpcContract } from "./src/rpc.js";
@@ -29,6 +31,8 @@ import {
   type LoopReviewState,
 } from "./overview-view";
 import { PERSONAL_PROJECT_ID } from "./lib/format-schedule";
+import type { LoopTemplate } from "./templates";
+import type { LoopTemplatesState, TemplateProject } from "./templates-view";
 import { Button } from "@cloudroom/shared-ui/button";
 import { DelayedLoading } from "@cloudroom/shared-ui/delayed-loading";
 import {
@@ -453,6 +457,87 @@ function DeleteAutomationDialog({
   );
 }
 
+// Templates tab: the repos to pick from, and one local loop per picked repo.
+function useTemplates(onAdded: () => void): LoopTemplatesState {
+  const rpc = useRpc<typeof automationRpcContract>();
+  const sdk = useSdk();
+  const { providers } = useProviders();
+  const [projects, setProjects] = useState<TemplateProject[] | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    sdk.projects.list().then(
+      (list) => {
+        if (cancelled) return;
+        setProjects(
+          list
+            .filter((project) => project.id !== PERSONAL_PROJECT_ID)
+            .map((project) => ({
+              id: project.id,
+              name: project.name,
+              path:
+                (
+                  project.sources.find((source) => source.isDefault) ??
+                  project.sources[0]
+                )?.path ?? null,
+            }))
+            .sort((a, b) => a.name.localeCompare(b.name)),
+        );
+      },
+      () => !cancelled && setProjects([]),
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [sdk]);
+  const onAdd = useCallback(
+    async (template: LoopTemplate, projectIds: string[]) => {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // The template's agent when it is set up here, else each project's default agent.
+      const ownAgent = providers.some(
+        (provider) => provider.id === template.providerId && provider.available,
+      );
+      const results = await Promise.allSettled(
+        projectIds.map(async (projectId) => {
+          const defaults = await sdk.projects.defaultExecutionOptions({
+            projectId,
+          });
+          const agent = ownAgent || defaults === null ? template : defaults;
+          await rpc.call("automations_create", {
+            projectId,
+            name: template.name,
+            origin: "human",
+            trigger: { triggerType: "schedule", cron: template.cron, timezone },
+            execution: {
+              mode: "agent",
+              prompt: template.prompt,
+              providerId: agent.providerId,
+              model: agent.model,
+              reasoningLevel: agent.reasoningLevel,
+              permissionMode: defaults?.permissionMode ?? "auto",
+              environment: { type: "project-default" },
+            },
+          });
+        }),
+      );
+      const failed = results.filter((result) => result.status === "rejected");
+      const added = results.length - failed.length;
+      if (added > 0) {
+        toast.success(
+          `${template.name} is on for ${added} repo${added === 1 ? "" : "s"}.`,
+        );
+      }
+      if (failed[0]?.status === "rejected") {
+        toast.error(
+          `Couldn't add ${template.name} to ${failed.length} repo${failed.length === 1 ? "" : "s"}: ${errorText(failed[0].reason)}`,
+        );
+      }
+      onAdded();
+    },
+    [providers, rpc, sdk, onAdded],
+  );
+  return { projects, onAdd };
+}
+
 function OverviewView({
   onOpenDetail,
   activeMode,
@@ -467,6 +552,7 @@ function OverviewView({
   const cloud = useCloudAutomations();
   const review = useReview();
   const mutations = useMutations();
+  const templates = useTemplates(refetch);
 
   const changeEnabled = useCallback(
     async (enabled: boolean, route: DetailRoute) => {
@@ -502,6 +588,7 @@ function OverviewView({
       onModeChange={onModeChange}
       cloud={cloud}
       review={review}
+      templates={templates}
     />
   );
 }
@@ -729,7 +816,11 @@ function AutomationsPanel({ subPath }: PluginNavPanelProps) {
   const navigate = useBbNavigate();
   const parsedRoute = useMemo(() => parseSubPath(subPath), [subPath]);
   const collectionMode: AutomationCollectionMode =
-    subPath === "browse" || subPath === "review" ? subPath : "installed";
+    subPath === "review" || subPath === "templates"
+      ? subPath
+      : subPath === "browse"
+        ? "templates"
+        : "installed";
   const openDetail = useCallback(
     (next: DetailRoute, options?: { editing?: boolean }) => {
       navigate.toPluginPanel(PANEL_PATH, {

@@ -18,7 +18,16 @@ export type CloudAutomation = {
   last_run_at: string | null;
   last_error: string | null;
   runs: number;
+  prompt?: string;
+  new_thread?: boolean;
   agent?: AutomationAgentSummary | null;
+};
+export type CloudAutomationChanges = {
+  prompt?: string;
+  cron?: string;
+  harness?: string;
+  model?: string;
+  reasoning?: string;
 };
 export type CloudAutomationActions = {
   onOpen: (a: CloudAutomation) => void;
@@ -26,10 +35,11 @@ export type CloudAutomationActions = {
   onNewUrl: (a: CloudAutomation) => void;
   onDelete: (a: CloudAutomation) => void;
   onEnabledChange: (a: CloudAutomation, enabled: boolean) => void;
+  onSave: (a: CloudAutomation, changes: CloudAutomationChanges) => Promise<boolean>;
 };
 type Request =
   | { action: "list" }
-  | { action: "update"; id: string; enabled: boolean }
+  | ({ action: "update"; id: string; enabled?: boolean } & CloudAutomationChanges)
   | { action: "run" | "delete" | "hook"; id: string };
 
 /** Asks, then replaces a webhook loop's secret URL and copies the new one. The website keeps only its hash, so this
@@ -120,8 +130,19 @@ export function useCloudAutomations(): {
           { action: "update", id: a.id, enabled },
           enabled ? "Resumed" : "Paused",
         ),
+      onSave: async (a, changes) => {
+        try {
+          await call({ action: "update", id: a.id, ...changes });
+          toast.success("Saved");
+          await load();
+          return true;
+        } catch (error: unknown) {
+          toast.error(error instanceof Error ? error.message : String(error));
+          return false;
+        }
+      },
     }),
-    [act, navigate],
+    [act, call, load, navigate],
   );
   return { rows, actions };
 }
