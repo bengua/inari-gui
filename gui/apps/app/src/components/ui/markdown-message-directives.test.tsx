@@ -26,6 +26,7 @@ import {
 import type { PluginMessageDirectiveSlot } from "@/lib/plugin-slots";
 import { ConversationMessageContent } from "@/components/thread/timeline/ConversationMessageContent";
 import { MemoryRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouteNavigationProvider } from "@/components/ui/app-route-anchor";
 import { ThreadTimelineRows } from "@/components/thread/timeline/ThreadTimelineRows";
 import {
@@ -580,33 +581,35 @@ describe("ThreadTimelineRows message directive subscription", () => {
     );
 
     render(
-      <MemoryRouter>
-        <ThreadTimelineRows
-          initialExpanded={new Set(["del_1"])}
-          threadId="thr_main"
-          projectId="proj_main"
-          timelineRows={[
-            conversationRow({
-              id: "asst_1",
-              role: "assistant",
-              text: '::inline-vis{file="top.html"}',
-              threadId: "thr_main",
-              turnId: "turn_top",
-            }),
-            delegationRow({
-              id: "del_1",
-              status: "pending",
-              durationMs: null,
-              output: '::inline-vis{file="nested.html"}',
-              threadId: "thr_main",
-              turnId: "turn_del",
-              childRows: [],
-            }),
-          ]}
-          threadRuntimeDisplayStatus="active"
-          workspaceRootPath={undefined}
-        />
-      </MemoryRouter>,
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <ThreadTimelineRows
+            initialExpanded={new Set(["del_1"])}
+            threadId="thr_main"
+            projectId="proj_main"
+            timelineRows={[
+              conversationRow({
+                id: "asst_1",
+                role: "assistant",
+                text: '::inline-vis{file="top.html"}',
+                threadId: "thr_main",
+                turnId: "turn_top",
+              }),
+              delegationRow({
+                id: "del_1",
+                status: "pending",
+                durationMs: null,
+                output: '::inline-vis{file="nested.html"}',
+                threadId: "thr_main",
+                turnId: "turn_del",
+                childRows: [],
+              }),
+            ]}
+            threadRuntimeDisplayStatus="active"
+            workspaceRootPath={undefined}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
 
     const mounts = screen.getAllByTestId("inline-vis");
@@ -631,22 +634,24 @@ describe("ThreadTimelineRows message directive subscription", () => {
     );
 
     render(
-      <MemoryRouter>
-        <ThreadTimelineRows
-          threadId="thr_main"
-          projectId="proj_main"
-          timelineRows={[
-            conversationRow({
-              id: "asst_1",
-              role: "assistant",
-              text: '::inline-vis{file="collide.html"}',
-              threadId: "thr_main",
-            }),
-          ]}
-          threadRuntimeDisplayStatus="idle"
-          workspaceRootPath={undefined}
-        />
-      </MemoryRouter>,
+      <QueryClientProvider client={new QueryClient()}>
+        <MemoryRouter>
+          <ThreadTimelineRows
+            threadId="thr_main"
+            projectId="proj_main"
+            timelineRows={[
+              conversationRow({
+                id: "asst_1",
+                role: "assistant",
+                text: '::inline-vis{file="collide.html"}',
+                threadId: "thr_main",
+              }),
+            ]}
+            threadRuntimeDisplayStatus="idle"
+            workspaceRootPath={undefined}
+          />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
 
     expect(screen.queryByTestId("inline-vis")).toBeNull();

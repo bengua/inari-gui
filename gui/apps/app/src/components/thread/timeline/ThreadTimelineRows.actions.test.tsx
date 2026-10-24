@@ -12,6 +12,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useState, type ComponentProps, type ReactElement } from "react";
 import { MemoryRouter, useNavigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { COMPACT_VIEWPORT_QUERY } from "@cloudroom/shared-ui/hooks/use-compact-viewport";
 import { POINTER_COARSE_QUERY } from "@cloudroom/shared-ui/hooks/use-pointer-coarse";
 import type { PluginMessageActionRegistration } from "@get-bb/plugin-sdk";
@@ -37,11 +38,20 @@ function messageActionRegistrationSet(
 }
 
 const toMarkup = (ui: ReactElement) =>
-  renderToStaticMarkup(<MemoryRouter>{ui}</MemoryRouter>);
+  renderToStaticMarkup(
+    <QueryClientProvider client={new QueryClient()}>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </QueryClientProvider>,
+  );
 const renderWithRouter = (
   ui: ReactElement,
   initialEntries: ComponentProps<typeof MemoryRouter>["initialEntries"] = ["/"],
-) => render(<MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>);
+) =>
+  render(
+    <QueryClientProvider client={new QueryClient()}>
+      <MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>
+    </QueryClientProvider>,
+  );
 
 function SameThreadSearchNavigationHarness() {
   const navigate = useNavigate();

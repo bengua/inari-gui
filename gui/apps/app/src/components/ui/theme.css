@@ -511,20 +511,17 @@
     var(--primary) 35%,
     transparent
   );
-  /* Prompt mention pills (light): a near-flat chip with a quiet top-down surface
-   * step, soft border, and light shadow. Every face/line derives from the
-   * --canvas/--ink anchors (label and icon are the ink itself) so a custom
-   * palette tints the pill along with the rest of the UI instead of stranding a
-   * neutral-gray chip — the shadow stays a faint neutral drop. */
+  /* Prompt mention pills (light): a borderless soft-fill chip of translucent
+   * ink, so a custom palette tints it with the rest of the UI. The face is a
+   * one-color gradient so `bg-*` utilities on the pill cannot override it. */
   --pill-surface: linear-gradient(
-    to bottom,
-    color-mix(in oklch, var(--ink) 4.4%, var(--canvas)),
-    color-mix(in oklch, var(--ink) 4.7%, var(--canvas))
+    color-mix(in oklab, var(--ink) 13%, transparent),
+    color-mix(in oklab, var(--ink) 13%, transparent)
   );
-  --pill-surface-border: var(--border);
+  --pill-surface-border: transparent;
   --pill-foreground: var(--ink);
   --pill-icon: var(--ink);
-  --pill-shadow: 0 1px 1px 0 oklch(0.2 0 0 / 0.02);
+  --pill-shadow: none;
   /* Skill mentions: electric lime is unreadable on white, so light uses olive-lime. */
   --skill-mention-foreground: #4d7c0f;
   --pill-surface-selected: linear-gradient(
@@ -747,20 +744,16 @@
     var(--primary) 35%,
     transparent
   );
-  /* Prompt mention pills (dark): a raised graphite chip a few steps lighter than
-   * the canvas with a light label and icon glyph. Mirrors the light block:
-   * every face/line derives from the --canvas/--ink anchors (label and icon are
-   * the ink itself) so a custom palette tints the pill instead of stranding a
-   * neutral-gray chip — the shadow stays a faint neutral drop. */
+  /* Prompt mention pills (dark): mirrors the light block's borderless soft
+   * fill, plus a faint top highlight. */
   --pill-surface: linear-gradient(
-    to bottom,
-    color-mix(in oklch, var(--ink) 13%, var(--canvas)),
-    color-mix(in oklch, var(--ink) 11.9%, var(--canvas))
+    color-mix(in oklab, var(--ink) 13%, transparent),
+    color-mix(in oklab, var(--ink) 13%, transparent)
   );
-  --pill-surface-border: var(--border);
+  --pill-surface-border: transparent;
   --pill-foreground: var(--ink);
   --pill-icon: var(--ink);
-  --pill-shadow: 0 1px 1px 0 oklch(0 0 0 / 0.08);
+  --pill-shadow: inset 0 1px 0 color-mix(in oklab, white 5%, transparent);
   --skill-mention-foreground: #ccff00;
   --pill-surface-selected: linear-gradient(
     to bottom,

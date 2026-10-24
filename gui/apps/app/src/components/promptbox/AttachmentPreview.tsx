@@ -15,6 +15,7 @@ import { toUserAttachmentImageSrc } from "@/lib/user-attachment-images";
 import {
   getLocalAttachmentPreviewSrc,
   releaseLocalAttachmentPreview,
+  rememberLocalAttachmentAspectRatio,
 } from "@/lib/attachment-local-previews";
 
 export function resolveAttachmentPreviewSrc(
@@ -178,6 +179,12 @@ export function AttachmentPreview({
                       className="h-16 w-24 object-cover"
                       loading="lazy"
                       decoding="async"
+                      onLoad={(event) =>
+                        rememberLocalAttachmentAspectRatio(
+                          attachment.path,
+                          event.currentTarget,
+                        )
+                      }
                     />
                   </button>
                   {onRemoveAttachment ? (

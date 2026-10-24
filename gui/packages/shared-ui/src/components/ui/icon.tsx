@@ -65,6 +65,7 @@ import {
   SoftFolderIcon,
   SoftMoreIcon,
   SoftNewThreadIcon,
+  SoftSendIcon,
   SoftSettingsIcon,
 } from "./icon-soft";
 
@@ -151,6 +152,7 @@ const CORE_ICON_MAP = {
   PanelLeft: SidebarLeftIcon,
   Search: Search01Icon,
   SectionAdd: SectionAddStrokeRoundedIcon,
+  Send: SoftSendIcon,
   Settings: SoftSettingsIcon,
   SlidersHorizontal: SlidersHorizontalIcon,
   Spinner: DashedLineCircleIcon,

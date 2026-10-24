@@ -90,3 +90,15 @@ export const SoftGitBranchIcon: IconSvgElement = [
   path("M6 7.75v8.5", "3"),
   path("M8.25 18.5H13a5 5 0 0 0 5-5V7.75", "4"),
 ];
+
+export const SoftSendIcon: IconSvgElement = [
+  [
+    "path",
+    {
+      d: "M12 19.5V4.5M5.4 11.1 12 4.5l6.6 6.6",
+      ...STROKE,
+      strokeWidth: "2.7",
+      key: "0",
+    },
+  ],
+];

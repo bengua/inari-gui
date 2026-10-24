@@ -86,6 +86,8 @@ function readinessTimeoutMs(): number {
 }
 const CHANNEL_REQUEST_TIMEOUT_MS = 30_000;
 const AGENT_END_LEAF_TIMEOUT_MS = 5_000;
+/** Pi starts overflow compaction right after agent_end; past this, it won't. */
+const OVERFLOW_DECISION_WAIT_MS = 2_000;
 
 type PiSessionConstructionOutcome = { ok: true } | { ok: false; error: Error };
 
@@ -135,6 +137,10 @@ export class PiRpcSession {
     steering: [],
   };
   private autoRetryInProgress = false;
+  private heldOverflowEnd: {
+    event: PiRpcEvent;
+    timer: ReturnType<typeof setTimeout> | null;
+  } | null = null;
   private terminalSteerSettlement: Promise<void> | null = null;
   private readonly pendingRunSettlements: PendingRunSettlement[] = [];
   private readonly channelReplies = new Map<string, ChannelReply>();
@@ -537,11 +543,14 @@ export class PiRpcSession {
     }
   }
 
-  private handleEvent(raw: Record<string, unknown>): void {
+  private handleEvent(raw: Record<string, unknown>, released = false): void {
     if (typeof raw.type !== "string") {
       return;
     }
     const event = raw as PiRpcEvent;
+    if (!released && this.holdPossibleOverflowEnd(event)) {
+      return;
+    }
     this.trackProcessingState(event);
     this.observeInputConsumption(event);
     this.observeTerminalSteerSettlement(event);
@@ -575,6 +584,71 @@ export class PiRpcSession {
     this.deliverInOrder(() => {
       this.onEvent(event);
     });
+  }
+
+  /**
+   * Pi reports a context overflow as a failed run, then may compact and retry
+   * on its own. Hold a failed agent_end until Pi decides: a retry is passed on
+   * as `willRetry`, so the turn stays open and stoppable like Pi's other
+   * retries. Anything else releases it unchanged.
+   */
+  private holdPossibleOverflowEnd(event: PiRpcEvent): boolean {
+    const held = this.heldOverflowEnd;
+    if (held === null) {
+      if (event.type !== "agent_end" || event.willRetry === true) {
+        return false;
+      }
+      const messages = Array.isArray(event.messages) ? event.messages : [];
+      const last = messages[messages.length - 1] as
+        | { role?: string; stopReason?: string }
+        | undefined;
+      if (
+        last?.role !== "assistant" ||
+        (last.stopReason !== "error" && last.stopReason !== "length")
+      ) {
+        return false;
+      }
+      this.heldOverflowEnd = {
+        event,
+        timer: setTimeout(
+          () => this.releaseOverflowEnd(false),
+          OVERFLOW_DECISION_WAIT_MS,
+        ),
+      };
+      return true;
+    }
+    if (event.reason === "overflow" && event.type === "compaction_start") {
+      if (held.timer !== null) {
+        clearTimeout(held.timer);
+        held.timer = null;
+      }
+      return false;
+    }
+    if (event.reason === "overflow" && event.type === "compaction_end") {
+      this.releaseOverflowEnd(
+        event.willRetry === true && event.aborted !== true,
+      );
+      return false;
+    }
+    if (event.type === "agent_start" || event.type === "compaction_start") {
+      this.releaseOverflowEnd(false);
+    }
+    return false;
+  }
+
+  private releaseOverflowEnd(willRetry: boolean): void {
+    const held = this.heldOverflowEnd;
+    if (held === null) {
+      return;
+    }
+    this.heldOverflowEnd = null;
+    if (held.timer !== null) {
+      clearTimeout(held.timer);
+    }
+    this.handleEvent(
+      willRetry ? { ...held.event, willRetry } : held.event,
+      true,
+    );
   }
 
   private deliverInOrder(deliver: () => void | Promise<void>): Promise<void> {
@@ -758,6 +832,10 @@ export class PiRpcSession {
   }
 
   private handleExit(info: PiRpcChildExitInfo): void {
+    if (this.heldOverflowEnd?.timer) {
+      clearTimeout(this.heldOverflowEnd.timer);
+    }
+    this.heldOverflowEnd = null;
     this.ready.reject(new PiRpcChildExitedError(info));
     for (const [, reply] of this.channelReplies) {
       reply.reject(new PiRpcChildExitedError(info));

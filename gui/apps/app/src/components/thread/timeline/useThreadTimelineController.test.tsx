@@ -1115,24 +1115,25 @@ describe("useThreadTimelineController commits", () => {
     ).toEqual([]);
   });
 
-  it("commits once on mount with a cached timeline and shows its rows and cursor", async () => {
+  it("commits once on mount with a cached timeline, shows its rows and cursor, and fetches only new events", async () => {
     const { queryClient, wrapper } = createQueryClientTestHarness();
-    queryClient.setQueryData(
-      TIMELINE_QUERY_KEY,
-      makeTimelineResponse({
-        maxSeq: 1,
-        rows: [newestLoadedRow],
-        timelinePage: {
-          hasOlderRows: true,
-          olderCursor: { anchorId: newestLoadedRow.id, anchorSeq: 1 },
-        },
-      }),
-    );
+    const cachedTimeline = makeTimelineResponse({
+      maxSeq: 1,
+      rows: [newestLoadedRow],
+      timelinePage: {
+        hasOlderRows: true,
+        olderCursor: { anchorId: newestLoadedRow.id, anchorSeq: 1 },
+      },
+    });
+    queryClient.setQueryData(TIMELINE_QUERY_KEY, cachedTimeline);
+    vi.mocked(sdk.threads.timeline).mockResolvedValue(cachedTimeline);
 
     const view = renderProfiledController(wrapper);
     await flushQueryNotifications();
 
-    expect(sdk.threads.timeline).not.toHaveBeenCalled();
+    expect(sdk.threads.timeline).toHaveBeenCalledWith(
+      expect.objectContaining({ afterSequence: "1" }),
+    );
     expect(view.profilerCommitCount()).toBe(1);
     expect(rowIds(view.latest())).toEqual([newestLoadedRow.id]);
     expect(view.latest().hasOlderTimelineRows).toBe(true);

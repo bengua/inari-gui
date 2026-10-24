@@ -7,6 +7,7 @@ import {
 } from "../../ui/image-lightbox.js";
 import { cn } from "@cloudroom/shared-ui/lib/utils";
 import { buildProjectAttachmentContentUrl } from "@/lib/file-content-urls";
+import { getLocalAttachmentAspectRatio } from "@/lib/attachment-local-previews";
 import { AttachmentFileIcon } from "@/components/promptbox/AttachmentPreview";
 import type {
   ThreadTimelineLocalFileLinkHandler,
@@ -15,8 +16,11 @@ import type {
 
 interface ConversationImageItem {
   alt: string;
+  aspectRatio?: number | null;
   src: string;
 }
+
+const FALLBACK_IMAGE_ASPECT_RATIO = 4 / 3;
 
 export interface ConversationAttachmentItems {
   filePaths: string[];
@@ -90,6 +94,7 @@ export function buildAttachmentItems({
     })),
     ...attachments.localImagePaths.map((path) => ({
       alt: fileNameFromPath(path),
+      aspectRatio: getLocalAttachmentAspectRatio(path),
       src: resolveUserAttachmentImageSrc
         ? resolveUserAttachmentImageSrc(path, projectId)
         : path,
@@ -154,6 +159,9 @@ export function ConversationAttachments({
                   "object-cover",
                   align === "end" ? "h-20 max-w-36" : "h-16 w-24",
                 )}
+                style={{
+                  aspectRatio: `auto ${imageItem.aspectRatio ?? FALLBACK_IMAGE_ASPECT_RATIO}`,
+                }}
                 loading="lazy"
                 decoding="async"
               />

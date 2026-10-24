@@ -180,6 +180,7 @@ import {
   useAppCommandShortcut,
 } from "@/components/commands/AppCommandProvider";
 import { useOptionalPaneContext } from "./thread-detail/PaneContext";
+import { useNewThreadPinCommand } from "./thread-detail/ThreadPinCommandHandler";
 import {
   PluginDetailPanelContext,
   usePluginDetailPanelState,
@@ -507,6 +508,7 @@ export function RootComposeView() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const createThread = useCreateThread();
+  const pinIfRequested = useNewThreadPinCommand(createThread.isPending);
   const [rootComposeSectionId, setRootComposeSectionId] = useState<
     string | null
   >(() => readSectionIdFromLocationState(location.state));
@@ -572,6 +574,7 @@ export function RootComposeView() {
               ...(sendAt === undefined ? {} : { sendAt }),
             },
       );
+      pinIfRequested(thread.id);
       setLastCreatedThreadId(thread.id);
       setForkSeed(null);
       setRootComposeSectionId(null);
@@ -590,6 +593,7 @@ export function RootComposeView() {
       queryClient,
       navigate,
       navigateToThreadAfterCreate,
+      pinIfRequested,
       rootComposeSectionId,
     ],
   );

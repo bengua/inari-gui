@@ -8,7 +8,7 @@ type PromptCommandLike = Pick<
 >;
 
 export const PROMPT_MENTION_PILL_CLASS = cn(
-  "prompt-mention-pill inline-flex max-w-full items-baseline gap-0.5 rounded-full border py-0.5 pl-1 pr-1.5 text-xs leading-4",
+  "prompt-mention-pill inline-flex max-w-full items-baseline gap-1 rounded-[5px] border py-0.5 pl-[5px] pr-[7px] text-xs leading-4",
   "align-baseline",
 );
 

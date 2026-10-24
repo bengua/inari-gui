@@ -560,7 +560,7 @@ function printThreadStatus(
   pullRequest: FetchedPullRequest | null,
 ): void {
   const { thread } = payload;
-  console.log(`Thread: ${thread.id}`);
+  console.log(`Thread: @thread:${thread.id}`);
   console.log(`  Status: ${thread.status}`);
   if (thread.title) {
     console.log(`  Title: ${thread.title}`);

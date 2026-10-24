@@ -662,7 +662,9 @@ export const cloudroomCommands = sqliteTable("cloudroom_commands", {
   input: text("input").notNull(),
   state: text("state").notNull().default("sending"),
   createdAt: integer("created_at").notNull(),
-});
+}, (table) => [
+  index("cloudroom_commands_thread_created_idx").on(table.threadId, table.createdAt),
+]);
 
 export const threadPluginMetadata = sqliteTable(
   "thread_plugin_metadata",

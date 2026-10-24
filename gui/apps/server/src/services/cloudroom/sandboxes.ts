@@ -173,6 +173,17 @@ export async function macOpencodeLogin(): Promise<string | null> {
   try { const parsed: unknown = value && JSON.parse(value); return parsed && (!Array.isArray(parsed) || parsed.length) ? value : null; } catch { return null; }
 }
 
+/** What Cloud gets for OpenCode: its login, plus the custom providers in its global opencode.json (feedback #547).
+ *  The rest of that file, such as MCP servers, plugins, and permissions, belongs to this computer. */
+async function macOpencodeCloudLogin(): Promise<string | null> {
+  const [auth, text] = await Promise.all([macOpencodeLogin(), readFile(join(process.env.XDG_CONFIG_HOME || join(homedir(), ".config"), "opencode/opencode.json"), "utf8").catch(() => null)]);
+  let provider: unknown;
+  try { provider = text ? (JSON.parse(text) as { provider?: unknown }).provider : undefined; } catch { /* Comments: copy the login only. */ }
+  if (!provider || typeof provider !== "object" || !Object.keys(provider).length) return auth;
+  const config = JSON.stringify({ provider });
+  return JSON.stringify(auth ? { auth, config } : { config });
+}
+
 /** Hermes seeds config.yaml and .env from long commented templates. Comments and blank lines stay on this computer;
  *  text inside YAML block scalars (`key: |`) is kept as is. */
 function withoutComments(text: string): string {
@@ -896,7 +907,7 @@ export class SandboxDirectory {
       const value = await read().catch((error: unknown) => { failed.push(`${name}: ${error instanceof Error ? error.message : String(error)}`); return null; });
       if (value) await save(name, value);
     };
-    await copy("opencode", macOpencodeLogin);
+    await copy("opencode", macOpencodeCloudLogin);
     await copy("hermes", macHermesLogin);
     await copy("devin", macDevinLogin);
     await copy("openclaw", macOpenclawLogin);

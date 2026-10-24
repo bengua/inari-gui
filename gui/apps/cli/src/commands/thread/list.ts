@@ -93,7 +93,7 @@ function printThreadTable(
   projectNames: ReadonlyMap<string, string>,
 ): void {
   const rows = threads.map((thread) => [
-    thread.id,
+    `@thread:${thread.id}`,
     truncateCell(formatThreadListTitle(thread), MAX_TITLE_WIDTH),
     formatThreadListProject(thread, projectNames),
     formatThreadListStatus(thread),

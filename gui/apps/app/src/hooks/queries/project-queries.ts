@@ -13,6 +13,11 @@ import {
   type FilePreview,
 } from "@cloudroom/client-core";
 import { decodeBase64Bytes } from "@/lib/base64-bytes";
+import {
+  commandCatalogCacheKey,
+  readCachedCommandCatalog,
+  writeCachedCommandCatalog,
+} from "@/lib/command-catalog-cache";
 import { buildProjectFileContentUrl } from "@/lib/file-content-urls";
 import { readProjectBranchOptions } from "@/lib/project-branch-options";
 import { sdk } from "@/lib/sdk";
@@ -306,8 +311,8 @@ export function projectCommandsQueryOptions(args: UseProjectCommandsArgs) {
       args.environmentId,
       args.hostId,
     ),
-    queryFn: ({ signal }: { signal: AbortSignal }) =>
-      sdk.projects.commands({
+    queryFn: async ({ signal }: { signal: AbortSignal }) => {
+      const response = await sdk.projects.commands({
         projectId: requireProjectId(args.projectId, "useProjectCommands"),
         provider: requireProviderId(args.providerId, "useProjectCommands"),
         signal,
@@ -316,7 +321,13 @@ export function projectCommandsQueryOptions(args: UseProjectCommandsArgs) {
           : args.hostId !== null
             ? { hostId: args.hostId }
             : {}),
-      }),
+      });
+      writeCachedCommandCatalog(
+        commandCatalogCacheKey(args.projectId, args.providerId),
+        response,
+      );
+      return response;
+    },
   };
 }
 
@@ -335,5 +346,11 @@ export function useProjectCommands(
     enabled,
     ...TYPEAHEAD_QUERY_POLICY,
     staleTime: 0,
+    // Preview the project's last saved list until this thread's own list
+    // loads. If that load fails, the preview drops and the error shows.
+    placeholderData: () =>
+      readCachedCommandCatalog(
+        commandCatalogCacheKey(args.projectId, args.providerId),
+      ) ?? undefined,
   });
 }

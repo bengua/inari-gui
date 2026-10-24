@@ -11,6 +11,7 @@ import {
 } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { useComposedRefs } from "@radix-ui/react-compose-refs";
+import { useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "react-router-dom";
 import { TimelineImageGallery } from "./TimelineImageGallery";
 import type {
@@ -19,6 +20,7 @@ import type {
   ThreadRuntimeDisplayStatus,
 } from "@cloudroom/domain";
 import type {
+  ThreadConversationOutlineResponse,
   TimelineParentChange,
   TimelineRow,
   TimelineSystemOperationKind,
@@ -125,7 +127,10 @@ import {
 } from "./timeline-row-containment.js";
 import { NESTED_TIMELINE_GROUP_LINE_CLASS_NAME } from "./timeline-nested-group-line.js";
 import { getThreadRoutePath } from "@/lib/route-paths";
-import { useThreadTimelineTurnSummaryDetails } from "@/hooks/queries/thread-queries";
+import {
+  fetchThreadConversationOutline,
+  useThreadTimelineTurnSummaryDetails,
+} from "@/hooks/queries/thread-queries";
 import { type ThreadTimelineTurnSummaryDetailsQueryIdentity } from "@/hooks/queries/query-keys";
 import {
   useSenderThreadMetadataById,
@@ -138,7 +143,6 @@ import {
   type PluginMessageActionSlot,
 } from "@/lib/plugin-slots.js";
 import { runPluginMessageAction } from "@/lib/plugin-message-actions.js";
-import { sdk } from "@/lib/sdk";
 import { isPluginSideChatSenderThread } from "@/lib/side-chat-plugin.js";
 import {
   buildMessageDirectiveRegistry,
@@ -380,6 +384,14 @@ const TimelineSearchExpansionContext =
 const TimelineWindowingEnabledContext = createContext(false);
 const TIMELINE_TERMINAL_EXPANSION_RETENTION = 24;
 
+function outlineMessageNumber(
+  outline: ThreadConversationOutlineResponse,
+  rowId: string,
+): number | null {
+  const index = outline.items.findIndex((item) => item.id === rowId);
+  return index === -1 ? null : index + 1;
+}
+
 /**
  * Numbers top-level user and agent messages from 1, like the server outline.
  * Asks the outline when older messages are not loaded yet.
@@ -393,25 +405,34 @@ function useMessageNumberResolver({
   threadId: string | undefined;
   timelineRows: readonly TimelineRow[];
 }): ResolveMessageNumber {
+  const queryClient = useQueryClient();
   const latestRef = useRef({ hasOlderTimelineRows, threadId, timelineRows });
   latestRef.current = { hasOlderTimelineRows, threadId, timelineRows };
-  return useCallback((rowId, onResolved) => {
-    const latest = latestRef.current;
-    if (!latest.hasOlderTimelineRows || latest.threadId === undefined) {
-      const index = latest.timelineRows
-        .filter((row) => row.kind === "conversation")
-        .findIndex((row) => row.id === rowId);
-      onResolved(index === -1 ? null : index + 1);
-      return;
-    }
-    void sdk.threads.conversationOutline({ threadId: latest.threadId }).then(
-      (outline) => {
-        const index = outline.items.findIndex((item) => item.id === rowId);
+  return useCallback(
+    (rowId, onResolved) => {
+      const latest = latestRef.current;
+      if (!latest.hasOlderTimelineRows || latest.threadId === undefined) {
+        const index = latest.timelineRows
+          .filter((row) => row.kind === "conversation")
+          .findIndex((row) => row.id === rowId);
         onResolved(index === -1 ? null : index + 1);
-      },
-      () => onResolved(null),
-    );
-  }, []);
+        return;
+      }
+      const outlineThreadId = latest.threadId;
+      void fetchThreadConversationOutline(queryClient, outlineThreadId)
+        .then(
+          (outline) =>
+            outlineMessageNumber(outline, rowId) ??
+            fetchThreadConversationOutline(
+              queryClient,
+              outlineThreadId,
+              0,
+            ).then((freshOutline) => outlineMessageNumber(freshOutline, rowId)),
+        )
+        .then(onResolved, () => onResolved(null));
+    },
+    [queryClient],
+  );
 }
 
 function addMessageToChatHandler(
@@ -2251,6 +2272,18 @@ function ThreadTimelineRowsForTimelineView(props: ThreadTimelineRowsProps) {
   const dismissSelection = useCallback(() => {
     setActiveSelection(null);
   }, []);
+  const queryClient = useQueryClient();
+  const outlinePrefetchThreadId =
+    activeSelection !== null && props.hasOlderTimelineRows
+      ? timelineThreadId
+      : undefined;
+  useEffect(() => {
+    if (outlinePrefetchThreadId === undefined) return;
+    void fetchThreadConversationOutline(
+      queryClient,
+      outlinePrefetchThreadId,
+    ).catch(() => {});
+  }, [outlinePrefetchThreadId, queryClient]);
   const handleSelectionAddToChat = useCallback(
     (
       text: string,

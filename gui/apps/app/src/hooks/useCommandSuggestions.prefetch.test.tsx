@@ -3,6 +3,11 @@
 import { cleanup, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { POINTER_COARSE_QUERY } from "@cloudroom/shared-ui/hooks/use-pointer-coarse";
+import {
+  clearCachedCommandCatalogs,
+  commandCatalogCacheKey,
+  writeCachedCommandCatalog,
+} from "@/lib/command-catalog-cache";
 import { sdk } from "@/lib/sdk";
 import { createQueryClientTestHarness } from "@/test/queryClientTestHarness";
 import { useCommandSuggestions } from "./useCommandSuggestions";
@@ -47,6 +52,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  clearCachedCommandCatalogs();
   vi.clearAllMocks();
   vi.restoreAllMocks();
 });
@@ -77,7 +83,36 @@ describe("useCommandSuggestions catalog prefetch", () => {
     expect(result.current.isLoading).toBe(false);
   });
 
-  it("does not add a request for fine-pointer composers, which autofocus on mount", () => {
+  it("shows the saved list instantly before the fresh one loads", () => {
+    mockPointer(false);
+    writeCachedCommandCatalog(commandCatalogCacheKey("project-1", "codex"), {
+      commands: [
+        {
+          name: "review",
+          description: "Review code",
+          argumentHint: null,
+          source: "command",
+          origin: "user",
+        },
+      ],
+    });
+    const { wrapper } = createQueryClientTestHarness();
+
+    const { result } = renderHook(
+      () =>
+        useCommandSuggestions({
+          ...BASE_ARGS,
+          composerFocused: true,
+          query: "rev",
+        }),
+      { wrapper },
+    );
+
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.suggestions.map((s) => s.name)).toContain("review");
+  });
+
+  it("warms an empty list when a fine-pointer composer gains focus", async () => {
     mockPointer(false);
     const { wrapper } = createQueryClientTestHarness();
 
@@ -86,7 +121,9 @@ describe("useCommandSuggestions catalog prefetch", () => {
       { wrapper },
     );
 
-    expect(sdk.projects.commands).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(sdk.projects.commands).toHaveBeenCalledTimes(1);
+    });
   });
 
   it("still fetches on the first trigger without any focus signal", async () => {

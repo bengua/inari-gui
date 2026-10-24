@@ -125,7 +125,7 @@ describe("room-cli thread list command output", () => {
     });
     expect(collectLogPayloads(vi.mocked(console.log))).toEqual([
       "",
-      "ID                 Title  Project  Status         \n-----------------  -----  -------  ---------------\nthread-archived-1  -      Alpha    idle (archived)",
+      "ID                         Title  Project  Status         \n-------------------------  -----  -------  ---------------\n@thread:thread-archived-1  -      Alpha    idle (archived)",
       "",
     ]);
   });
@@ -178,7 +178,7 @@ describe("room-cli thread list command output", () => {
     });
     expect(collectLogPayloads(vi.mocked(console.log))).toEqual([
       "",
-      "ID                 Title  Project  Status      \n-----------------  -----  -------  ------------\nthread-personal-1  -      -        idle        ",
+      "ID                         Title  Project  Status      \n-------------------------  -----  -------  ------------\n@thread:thread-personal-1  -      -        idle        ",
       "",
     ]);
   });

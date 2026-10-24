@@ -25,6 +25,7 @@ import {
 } from "react";
 import {
   commandPillDismissedRangeEnd,
+  filterCommandSuggestions,
   findActiveTrigger,
   orderCommandSuggestions,
   type ActiveTrigger,
@@ -271,7 +272,6 @@ function PromptSubmitButton({
   onTouchSubmit,
   title,
 }: PromptSubmitButtonProps) {
-  const isPointerCoarse = usePointerCoarse();
   const touchRef = useRef<{ pointerId: number; x: number; y: number } | null>(
     null,
   );
@@ -336,6 +336,7 @@ function PromptSubmitButton({
       }}
       className={cn(
         className,
+        "rounded-full disabled:border-transparent disabled:bg-foreground/10 disabled:text-foreground/55 disabled:opacity-100",
         label !== undefined &&
           !isCompact &&
           "size-auto h-8 gap-1.5 px-2.5 max-md:pointer-coarse:size-auto max-md:pointer-coarse:h-10 max-md:pointer-coarse:px-3",
@@ -346,7 +347,7 @@ function PromptSubmitButton({
       ) : (
         <>
           <Icon
-            name={icon ?? (isPointerCoarse ? "ArrowUp" : "CornerDownLeft")}
+            name={icon ?? "Send"}
             className="size-4"
           />
           {label !== undefined && !isCompact ? (
@@ -2238,20 +2239,32 @@ export function PromptBoxInternal({
       },
     ];
   }, [activeCommandQuery, fastMode]);
-  const modelShortcutSuggestions = useMemo<
-    ModelShortcutCommandSuggestion[]
-  >(() => {
-    const query = activeCommandQuery.trim().toLowerCase();
-    return (modelShortcuts ?? [])
-      .filter(({ name, description }) =>
-        `${name} ${description}`.toLowerCase().includes(query),
-      )
-      .map(({ name, description }) => ({
-        kind: "model-shortcut",
-        name,
-        description,
-      }));
-  }, [activeCommandQuery, modelShortcuts]);
+  // Model shortcuts filter and rank as skills, so they lead only when they match best.
+  const modelShortcutsBySkill = useMemo(
+    () =>
+      new Map<ProviderCommandSuggestion, ModelShortcutCommandSuggestion>(
+        (modelShortcuts ?? []).map(({ name, description }) => [
+          {
+            kind: "command",
+            name,
+            source: "skill",
+            origin: "user",
+            description,
+            argumentHint: null,
+          },
+          { kind: "model-shortcut", name, description },
+        ]),
+      ),
+    [modelShortcuts],
+  );
+  const modelShortcutSuggestions = useMemo(
+    () =>
+      filterCommandSuggestions(
+        [...modelShortcutsBySkill.keys()],
+        activeCommandQuery,
+      ),
+    [activeCommandQuery, modelShortcutsBySkill],
+  );
   const locationSuggestions = useMemo<LocationCommandSuggestion[]>(() => {
     const query = activeCommandQuery.trim().toLowerCase();
     return (locationCommands ?? [])
@@ -2280,9 +2293,13 @@ export function PromptBoxInternal({
     () => [
       ...locationSuggestions,
       ...fastModeSuggestions,
-      ...modelShortcutSuggestions,
       ...reasoningSuggestions,
-      ...orderCommandSuggestions(commandSuggestions, activeCommandQuery),
+      ...orderCommandSuggestions(
+        [...commandSuggestions, ...modelShortcutSuggestions],
+        activeCommandQuery,
+      ).map(
+        (suggestion) => modelShortcutsBySkill.get(suggestion) ?? suggestion,
+      ),
     ],
     [
       activeCommandQuery,
@@ -2290,6 +2307,7 @@ export function PromptBoxInternal({
       fastModeSuggestions,
       locationSuggestions,
       modelShortcutSuggestions,
+      modelShortcutsBySkill,
       reasoningSuggestions,
     ],
   );
@@ -2831,7 +2849,11 @@ export function PromptBoxInternal({
     !submitDisabled &&
     !showVoiceActionGroup;
   const showStop = Boolean(
-    isRunning && onStop && !canSubmit && !isAttaching && !showVoiceActionGroup,
+    isRunning &&
+      onStop &&
+      !hasSubmittableInput &&
+      !isAttaching &&
+      !showVoiceActionGroup,
   );
   const canStartVoiceInput =
     voice !== undefined && voice.isSupported && !isSubmitting;
@@ -3630,6 +3652,7 @@ export function PromptBoxInternal({
                         onPointerDown={handleStopPointerDown}
                         onClick={handleStopClick}
                         className={cn(
+                          "rounded-full bg-foreground/10 hover:bg-foreground/15",
                           showCompactLayout
                             ? COMPACT_PROMPT_ACTION_BUTTON_CLASS
                             : COARSE_POINTER_PROMPT_ICON_ACTION_BUTTON_CLASS,

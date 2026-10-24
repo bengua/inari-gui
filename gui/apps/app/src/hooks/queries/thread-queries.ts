@@ -6,7 +6,7 @@ import {
   type NotifyOnChangeProps,
   type QueryClient,
 } from "@tanstack/react-query";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { COMPACT_VIEWPORT_QUERY } from "@cloudroom/shared-ui/hooks/use-compact-viewport";
 import { getMediaQuerySnapshot } from "@cloudroom/shared-ui/hooks/use-media-query";
 import type { PendingInteraction, ThreadListEntry } from "@cloudroom/domain";
@@ -87,6 +87,10 @@ import {
 } from "./query-keys";
 import { ARCHIVED_THREADS_PAGE_SIZE } from "./archived-threads-page-size";
 import { ingestThreadDetailBootstrap } from "../cache-owners/thread-detail-cache-owner";
+import {
+  RECENT_THREAD_GC_TIME,
+  useRememberRecentThread,
+} from "../cache-owners/recent-thread-cache";
 
 interface QueryOptions {
   enabled?: boolean;
@@ -912,6 +916,48 @@ async function fetchThreadTimeline({
   );
 }
 
+const THREAD_HOVER_PREFETCH_DELAY_MS = 100;
+
+function prefetchThreadTimeline(
+  queryClient: QueryClient,
+  threadId: string,
+): void {
+  const queryKey = threadTimelineQueryKey(threadId);
+  if (queryClient.getQueryData(queryKey) !== undefined) {
+    return;
+  }
+  void queryClient.prefetchQuery({
+    queryKey,
+    queryFn: ({ signal }) =>
+      fetchThreadTimeline({ queryClient, signal, threadId }),
+  });
+}
+
+export function usePrefetchThreadOnHover(threadId: string) {
+  const queryClient = useQueryClient();
+  const timerRef = useRef<number | null>(null);
+  const cancel = useCallback(() => {
+    if (timerRef.current !== null) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+  useEffect(() => cancel, [cancel]);
+  return useMemo(
+    () => ({
+      onPointerEnter: () => {
+        cancel();
+        timerRef.current = window.setTimeout(() => {
+          timerRef.current = null;
+          prefetchThreadTimeline(queryClient, threadId);
+        }, THREAD_HOVER_PREFETCH_DELAY_MS);
+      },
+      onPointerLeave: cancel,
+    }),
+    [cancel, queryClient, threadId],
+  );
+}
+
 export function useThreadTimeline(
   id: string,
   options?: ThreadTimelineQueryOptions,
@@ -919,6 +965,7 @@ export function useThreadTimeline(
   const queryClient = useQueryClient();
   const enabled = (options?.enabled ?? true) && Boolean(id);
   useThreadDetailRealtimeSubscription(id, { enabled });
+  useRememberRecentThread(id, enabled);
 
   return useQuery<ThreadTimelineResponse>({
     queryKey: threadTimelineQueryKey(id),
@@ -931,6 +978,7 @@ export function useThreadTimeline(
       });
     },
     enabled,
+    gcTime: RECENT_THREAD_GC_TIME,
     ...(options?.notifyOnChangeProps === undefined
       ? {}
       : { notifyOnChangeProps: options.notifyOnChangeProps }),
@@ -967,6 +1015,18 @@ export function useThreadConversationOutline(
     ...(options?.staleTime === undefined
       ? {}
       : { staleTime: options.staleTime }),
+  });
+}
+
+export function fetchThreadConversationOutline(
+  queryClient: QueryClient,
+  threadId: string,
+  staleTime = 60_000,
+): Promise<ThreadConversationOutlineResponse> {
+  return queryClient.fetchQuery<ThreadConversationOutlineResponse>({
+    queryKey: threadConversationOutlineQueryKey(threadId),
+    queryFn: () => sdk.threads.conversationOutline({ threadId }),
+    staleTime,
   });
 }
 

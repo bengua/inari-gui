@@ -57,7 +57,7 @@ describe("@cloudroom/templates", () => {
 
     expect(rendered).toContain("You are working inside Cloudroom");
     expect(rendered).toContain("IDE for managing coding agents");
-    expect(rendered).toContain("Reference a thread as `@thread:thr_abc123`");
+    expect(rendered).toContain("Mention any thread or agent as @thread:thr_abc123");
     expect(rendered).toContain("Do not construct thread URLs manually");
     expect(rendered).not.toContain(
       "Ask the user a blocking question only when",

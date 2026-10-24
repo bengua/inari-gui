@@ -89,7 +89,7 @@ export function VoiceRecordingBar({
             {isTranscribing && sendPressed ? (
               spinner
             ) : (
-              <Icon name="ArrowUp" className="size-4" />
+              <Icon name="Send" className="size-4" />
             )}
           </Button>
         </>

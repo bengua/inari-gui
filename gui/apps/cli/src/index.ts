@@ -12,6 +12,10 @@ import type { CliRuntimeContext } from "./context-env.js";
 
 maybeReexecViaRoomCli();
 
+process.argv = process.argv.map((arg) =>
+  arg.replace(/^@thread:(?=thr_[A-Za-z0-9_-]+$)/u, ""),
+);
+
 const program = new Command();
 
 program

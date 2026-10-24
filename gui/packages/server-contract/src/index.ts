@@ -24,3 +24,4 @@ export type {
 } from "@cloudroom/domain";
 
 export * from "./api/machine-environment.js";
+export { commandListResponseSchema } from "./api/projects.js";

@@ -1,6 +1,7 @@
 const MAX_LOCAL_PREVIEWS = 24;
 
 const localPreviewUrlsByPath = new Map<string, string>();
+const localPreviewAspectRatiosByPath = new Map<string, number>();
 
 function canCreateObjectUrls(): boolean {
   return (
@@ -31,12 +32,33 @@ export function getLocalAttachmentPreviewSrc(path: string): string | null {
   return localPreviewUrlsByPath.get(path) ?? null;
 }
 
+export function rememberLocalAttachmentAspectRatio(
+  path: string,
+  image: HTMLImageElement,
+): void {
+  if (
+    localPreviewUrlsByPath.has(path) &&
+    image.naturalWidth > 0 &&
+    image.naturalHeight > 0
+  ) {
+    localPreviewAspectRatiosByPath.set(
+      path,
+      image.naturalWidth / image.naturalHeight,
+    );
+  }
+}
+
+export function getLocalAttachmentAspectRatio(path: string): number | null {
+  return localPreviewAspectRatiosByPath.get(path) ?? null;
+}
+
 export function releaseLocalAttachmentPreview(path: string): void {
   const url = localPreviewUrlsByPath.get(path);
   if (url === undefined) {
     return;
   }
   localPreviewUrlsByPath.delete(path);
+  localPreviewAspectRatiosByPath.delete(path);
   URL.revokeObjectURL(url);
 }
 

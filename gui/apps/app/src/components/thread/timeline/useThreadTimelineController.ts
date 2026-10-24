@@ -121,7 +121,7 @@ export function useThreadTimelineController({
   const latestTimelineQuery = useThreadTimeline(threadId, {
     enabled,
     notifyOnChangeProps,
-    refetchOnMount: true,
+    refetchOnMount: "always",
   });
   const latestTimeline = latestTimelineQuery.data;
   const surfaceKey = resolveLoadedTimelineSurfaceKey(

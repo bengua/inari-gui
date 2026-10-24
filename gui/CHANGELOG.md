@@ -2,6 +2,19 @@
 
 Also on [cloudroom.dev/changelog](https://www.cloudroom.dev/changelog).
 
+## 120
+
+Faster threads and replies (2026-10-23)
+
+### Changes
+
+- Switching threads is much faster, and recent threads open instantly.
+- Follow-up messages in Cloud threads get a reply right away.
+- Reply opens instantly, even in very long threads.
+- A new send button, and it never turns into Stop while you have text typed.
+- The slash-command menu opens instantly and ranks model shortcuts with skills.
+- Sent images keep their shape while loading, and thread mentions look cleaner.
+
 ## 119
 
 Steadier starts after sleep (2026-10-23)

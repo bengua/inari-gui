@@ -25,6 +25,7 @@ import {
 } from "@/components/thread/ThreadActionsMenu";
 import { useThreadActions } from "@/components/thread/ThreadActionsProvider";
 import { useTeleportDirection } from "@/hooks/queries/cloudroom-queries";
+import { usePrefetchThreadOnHover } from "@/hooks/queries/thread-queries";
 import { useInlineThreadTitle } from "@/components/thread/InlineThreadTitle";
 import {
   preventPurposeOpenOnFocus,
@@ -549,6 +550,7 @@ function ThreadRowComponent({
     getThreadConversationCollapsedAtom(thread.id),
   );
   const shortcut = useSidebarThreadShortcut(thread.id);
+  const prefetchOnHover = usePrefetchThreadOnHover(thread.id);
   const pluginThreadRowStatus = usePluginThreadRowStatus(thread.id);
   const harnessIconMode = useAtomValue(harnessIconModeAtom);
   const showActive = isActive;
@@ -748,6 +750,8 @@ function ThreadRowComponent({
         data-sidebar-thread-id={thread.id}
         data-sidebar-project-id={projectId}
         data-sidebar-thread-child={thread.parentThreadId ? "" : undefined}
+        onPointerEnter={prefetchOnHover.onPointerEnter}
+        onPointerLeave={prefetchOnHover.onPointerLeave}
         onClick={(event) => {
           if (isEditing) {
             event.preventDefault();

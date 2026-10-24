@@ -11,6 +11,10 @@ import {
   projectCommandsQueryOptions,
   useProjectCommands,
 } from "./queries/project-queries";
+import {
+  commandCatalogCacheKey,
+  readCachedCommandCatalog,
+} from "@/lib/command-catalog-cache";
 import { COPY_COMMAND_NAME } from "./useCopyCommand";
 
 interface UseCommandSuggestionsArgs {
@@ -143,7 +147,6 @@ export function useCommandSuggestions(
   const isPointerCoarse = usePointerCoarse();
   const shouldPrefetchCatalog =
     args.composerFocused === true &&
-    isPointerCoarse &&
     args.projectId !== undefined &&
     args.providerId !== undefined &&
     trigger !== null;
@@ -155,17 +158,29 @@ export function useCommandSuggestions(
     if (!shouldPrefetchCatalog) {
       return;
     }
+    const catalogQuery = projectCommandsQueryOptions({
+      projectId: prefetchProjectId,
+      providerId: prefetchProviderId,
+      environmentId: prefetchEnvironmentId,
+      hostId: prefetchHostId,
+    });
+    // Desktop composers autofocus on every mount, so warm only a project
+    // with no saved list there.
+    if (
+      !isPointerCoarse &&
+      readCachedCommandCatalog(
+        commandCatalogCacheKey(prefetchProjectId, prefetchProviderId),
+      ) !== null
+    ) {
+      return;
+    }
     void queryClient.prefetchQuery({
-      ...projectCommandsQueryOptions({
-        projectId: prefetchProjectId,
-        providerId: prefetchProviderId,
-        environmentId: prefetchEnvironmentId,
-        hostId: prefetchHostId,
-      }),
+      ...catalogQuery,
       retry: false,
       staleTime: COMMAND_CATALOG_PREFETCH_STALE_TIME_MS,
     });
   }, [
+    isPointerCoarse,
     prefetchEnvironmentId,
     prefetchHostId,
     prefetchProjectId,
@@ -211,7 +226,8 @@ export function useCommandSuggestions(
     suggestions.length === 0 &&
     commandsQuery.data === undefined &&
     (commandsQuery.isPending || commandsQuery.isFetching);
-  const isError = isActive && commandsQuery.isError;
+  const isError =
+    isActive && commandsQuery.isError && commandsQuery.data === undefined;
 
   return {
     trigger,

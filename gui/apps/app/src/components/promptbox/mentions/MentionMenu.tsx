@@ -198,15 +198,11 @@ type CommandSectionKind =
   | ProviderCommandSection
   | "reasoning"
   | "fast-mode"
-  | "model-shortcut"
   | "location";
 
 function getCommandSectionLabel(kind: CommandSectionKind): string {
   if (kind === "location") {
     return "Location";
-  }
-  if (kind === "model-shortcut") {
-    return "Models";
   }
   if (kind === "fast-mode") {
     return "Fast mode";
@@ -510,8 +506,8 @@ function MentionResults({
                   trailing={
                     item.kind === "thread" ? (
                       <ThreadSuggestionTrailing item={item} />
-                    ) : secondaryContext === null ? null : secondaryContextKind ===
-                      "path" ? (
+                    ) : secondaryContext ===
+                      null ? null : secondaryContextKind === "path" ? (
                       <MutedTrailingPath>{secondaryContext}</MutedTrailingPath>
                     ) : (
                       <MutedTrailing>{secondaryContext}</MutedTrailing>
@@ -542,7 +538,11 @@ function CommandResults({
       groupSections({
         suggestions,
         sectionKind: (item): CommandSectionKind =>
-          item.kind === "command" ? providerCommandSection(item) : item.kind,
+          item.kind === "command"
+            ? providerCommandSection(item)
+            : item.kind === "model-shortcut"
+              ? "skill"
+              : item.kind,
         sectionLabel: getCommandSectionLabel,
       }),
     [suggestions],
