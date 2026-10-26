@@ -1,33 +1,41 @@
-# Build Cloudroom from source
+# Inari
 
-You need macOS on Apple Silicon, Git, Node.js 22.19+, pnpm 9.15.9, Python 3.11+, and Xcode Command Line Tools. Building needs no Cloudroom account.
+The web GUI for a self-hosted agent homelab, branded for **FreedzHost**.
 
-Run these from this folder:
+Inari lets you start and drive coding agents across your own machines — local
+and in your own cloud — from one interface. It is the front end that the
+[Inari Android app](https://github.com/bengua/inari-apk) loads, and it runs the
+same everywhere (phone, desktop, browser).
 
-```sh
-pnpm install --frozen-lockfile
-pnpm exec turbo run build typecheck --filter=@cloudroom/app --filter=@cloudroom/server --filter=@cloudroom/desktop --concurrency=2
-```
+[FreedzHost](https://freedzhost.cloud)
 
-Keep dependency install scripts on. SQLite, file watching, and terminals use native modules. If your pnpm version differs, use `npx --yes pnpm@9.15.9`.
+## About this fork
 
-## Run in dev mode
+Inari is a fork of [`davidondrej/cloudroom-gui`](https://github.com/davidondrej/cloudroom-gui),
+re-branded and adapted for a sovereign, self-hosted setup (own core, own
+machines, no dependency on a hosted account). It tracks upstream and keeps the
+original architecture; the changes are branding, affiliation links, and a set of
+UI refinements.
 
-Start the backend and browser UI, then Electron in a second terminal:
+Licensed under **Apache-2.0**, same as upstream — see [`LICENSE`](LICENSE).
+Full credit for the underlying application goes to the Cloudroom authors.
 
-```sh
-pnpm dev
-pnpm exec turbo run dev --filter=@cloudroom/desktop
-```
+## What's different from upstream
 
-Dev mode uses its own ports and profile. Local agents need their own installed, signed-in CLIs. To use your own core for Cloud threads, see [connect the desktop app](https://github.com/davidondrej/cloudroom-core/blob/main/docs/setup.md#connect-the-desktop-app).
+- FreedzHost branding and the Inari fox mascot
+- Right panel reworked toward an artifact-style reading experience:
+  - terminal at a larger font, inside a rounded card
+  - markdown previews with a capped reading width and roomier padding
+  - code / CSV / iframe previews as inset, bordered cards
+- Affiliation and documentation links point to `freedzhost.cloud`
 
-## Checks
+## Build
 
-```sh
-pnpm exec turbo run test --filter=@cloudroom/scripts --filter=@cloudroom/config --concurrency=2
-```
+The GUI is built and shipped by the companion tooling (branding, packaging,
+install) rather than from this repo directly. See the `inari` tooling repo for
+the `build-ship` flow.
 
-Desktop integration tests open real apps, so run them only in a test environment. The sync and preview helpers in `apps/server/src/assets/` are copies from the core, so change them there.
+## Related
 
-The build makes runnable bundles, not a signed installer.
+- [`inari-apk`](https://github.com/bengua/inari-apk) — the Android client
+- [`davidondrej/cloudroom-gui`](https://github.com/davidondrej/cloudroom-gui) — upstream
