@@ -5,8 +5,8 @@ import {
 export type { ChangelogBlock } from "../../../../../changelog-parser";
 
 export const CHANGELOG_LINKS: { page: string | null; source: string | null } = {
-  page: "https://www.cloudroom.dev/changelog",
-  source: "https://www.cloudroom.dev/changelog/feed",
+  page: "https://freedzhost.cloud",
+  source: "https://freedzhost.cloud",
 };
 export const RELEASE_META: Record<string, { date: string; headline: string }> =
   {};

@@ -573,7 +573,7 @@ export function SkillsLibrary() {
               action={
                 <CreateWithTemplatesButton
                   kind="skill"
-                  label="New Cloudroom skill"
+                  label="New Inari skill"
                   onCreate={handleCreateSkill}
                 />
               }

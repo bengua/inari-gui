@@ -1001,5 +1001,5 @@ function composerMention({
 }
 
 function unsupportedComposerMember(name: string): never {
-  throw new Error(`useComposer().${name} is not supported in Cloudroom yet.`);
+  throw new Error(`useComposer().${name} is not supported in Inari yet.`);
 }

@@ -10,9 +10,9 @@ interface DesktopUpdateInfo {
 }
 
 // The app updates itself; this link is the fallback when it can't.
-export const DESKTOP_DOWNLOAD_URL = "https://www.cloudroom.dev/download";
+export const DESKTOP_DOWNLOAD_URL = "https://freedzhost.cloud";
 export const LATEST_DESKTOP_RELEASE_QUERY_KEY = ["desktop", "latest-release"];
-const LATEST_DESKTOP_RELEASE_URL = "https://www.cloudroom.dev/download/latest";
+const LATEST_DESKTOP_RELEASE_URL = "https://freedzhost.cloud";
 
 // Versions look like "v49" in the app and "49" on the website. "dev" builds never match.
 function releaseNumber(version: string | null | undefined): number {

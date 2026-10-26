@@ -102,7 +102,7 @@ export function InviteSettingsCard() {
     <div data-testid="settings-invite-card" className="flex min-h-13 items-center gap-3 rounded-lg bg-surface-recessed py-2 pr-2.5 pl-4">
       <TicketIcon className="text-muted-foreground" />
       <p className="min-w-0 flex-1 text-sm">
-        <span className="font-medium text-foreground">Enjoying Cloudroom?</span>{" "}
+        <span className="font-medium text-foreground">Enjoying Inari?</span>{" "}
         <span className="text-muted-foreground">It's invite-only. Share it with up to 3 friends.</span>
       </p>
       {left <= 3 && (
@@ -181,10 +181,10 @@ function InviteTickets({ data, startStep, finish }: { data: Invites; startStep: 
   const steps: { title: ReactNode; lede: string; actions: ReactNode; art: ReactNode }[] = [
     {
       title: waiting === null ? <>The line is <em>long</em>.</> : <>{waiting.toLocaleString("en-US")} people<br />joined the <em>waitlist</em>.</>,
-      lede: "Your ticket lets a friend skip the waitlist and start using Cloudroom today.",
+      lede: "Your ticket lets a friend skip the waitlist and start using Inari today.",
       actions: <Primary onClick={next}>Continue <Arrow /></Primary>,
       art: (
-        <Ticket style={{ left: 90, top: 220, transform: "rotate(-4deg) scale(1.15)" }} number="No." label="WAITLIST" kicker="Cloudroom · waitlist"
+        <Ticket style={{ left: 90, top: 220, transform: "rotate(-4deg) scale(1.15)" }} number="No." label="WAITLIST" kicker="Inari · waitlist"
           title={waiting === null ? "In line" : `No. ${(waiting + 1).toLocaleString("en-US")}`} sub="Your friend's spot in line" foot="NOT YET" stamp={{ text: "WAIT", ink: true }} />
       ),
     },
@@ -241,7 +241,7 @@ function InviteTickets({ data, startStep, finish }: { data: Invites; startStep: 
         <div className="w-[44%] shrink-0 pr-8 pl-[8.5%] max-md:w-full max-md:px-7">
           <div className="flex items-center gap-2.5 font-mono text-xs tracking-[0.2em] text-[#8d8676] uppercase">
             <BbLogo className="size-[22px]" />
-            Cloudroom · invite-only
+            Inari · invite-only
           </div>
           <h1 className="mt-7 font-serif text-[64px] max-md:mt-5 max-md:text-[42px] leading-[1.02] font-medium tracking-[-0.03em] [&_em]:text-[#bfff00]">{current.title}</h1>
           <p className="mt-5 max-w-[400px] text-lg text-[#bdb5a2] max-md:mt-3 max-md:text-base">{current.lede}</p>
@@ -267,7 +267,7 @@ const TRIO: CSSProperties[] = [
 const NOTCHED = "radial-gradient(circle at 100px 0, transparent 13px, #000 13.5px) top/100% 51% no-repeat, radial-gradient(circle at 100px 100%, transparent 13px, #000 13.5px) bottom/100% 51% no-repeat";
 const PAPER: CSSProperties = { backgroundColor: "#f3ecdb", backgroundImage: "repeating-linear-gradient(90deg, transparent 0 22px, rgba(120,100,60,.05) 22px 23px)" };
 
-function Ticket({ style, number, label, kicker = "Cloudroom · admit one", title, sub, foot, live, used, stamp, dim }: {
+function Ticket({ style, number, label, kicker = "Inari · admit one", title, sub, foot, live, used, stamp, dim }: {
   style: CSSProperties; number: string; label: string; kicker?: string; title: ReactNode; sub?: string; foot: string; live?: boolean; used?: boolean; stamp?: { text: string; ink?: boolean; sent?: boolean }; dim?: boolean;
 }) {
   return (

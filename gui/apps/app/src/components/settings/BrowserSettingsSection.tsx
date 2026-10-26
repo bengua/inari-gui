@@ -234,7 +234,7 @@ export function BrowserSettingsSectionContent({
     <>
       <SettingsSection
         title="Browsers"
-        description="Bring signed-in sessions from a browser on this machine into the Cloudroom browser, so previews and agent tabs open already logged in."
+        description="Bring signed-in sessions from a browser on this machine into the Inari browser, so previews and agent tabs open already logged in."
         action={
           supported ? (
             <Button
@@ -250,7 +250,7 @@ export function BrowserSettingsSectionContent({
       >
         {!supported ? (
           <p className="text-sm text-subtle-foreground">
-            Only available in the Cloudroom desktop app.
+            Only available in the Inari desktop app.
           </p>
         ) : state.status === "loading" ? (
           <p className="text-sm text-muted-foreground">Loading…</p>

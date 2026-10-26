@@ -23,7 +23,7 @@ export interface YourMac {
 
 const YOUR_MACS_KEY = ["connect", "macs"] as const;
 
-// Every Mac signed in to this Cloudroom account, from the Connect plugin (ADR 0238).
+// Every Mac signed in to this Inari account, from the Connect plugin (ADR 0238).
 export function useYourMacs() {
   return useQuery({
     queryKey: YOUR_MACS_KEY,
@@ -71,7 +71,7 @@ export function OpenMacButton({ mac }: { mac: YourMac }) {
   );
 }
 
-// A Mac on your account that this Cloudroom doesn't run threads on yet.
+// A Mac on your account that this Inari doesn't run threads on yet.
 export function YourMacRow({ mac }: { mac: YourMac }) {
   const queryClient = useQueryClient();
   const run = useMutation({
@@ -150,10 +150,10 @@ export function NewPhoneAppBanner() {
     >
       <Icon name="Smartphone" className="size-4 shrink-0 text-primary" aria-hidden />
       <span className="min-w-0 flex-1 truncate">
-        <strong>Cloudroom has a new phone app.</strong> It works with your Mac off.
+        <strong>Inari has a new phone app.</strong> It works with your Mac off.
       </span>
       <Button size="sm" asChild>
-        <a href="https://www.cloudroom.dev/m">Get it</a>
+        <a href="https://freedzhost.cloud">Get it</a>
       </Button>
     </div>
   );

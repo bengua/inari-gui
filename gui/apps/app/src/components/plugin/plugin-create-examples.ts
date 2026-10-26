@@ -18,7 +18,7 @@ export const PLUGIN_EXAMPLES: readonly PluginExample[] = [
   },
   {
     title: "Live dashboard",
-    hook: "Put the numbers your team actually checks on the Cloudroom homepage.",
+    hook: "Put the numbers your team actually checks on the Inari homepage.",
     icon: "ChartColumn",
     brief:
       "adds a homepage dashboard with deploy frequency, open PR count, and CI pass rate, refreshed on an interval",
@@ -46,7 +46,7 @@ export const PLUGIN_EXAMPLES: readonly PluginExample[] = [
   },
   {
     title: "Support inbox",
-    hook: "Triage user reports into fixes without leaving Cloudroom.",
+    hook: "Triage user reports into fixes without leaving Inari.",
     icon: "Mail",
     brief:
       "adds a support inbox that pulls in bug reports, clusters duplicates, drafts replies for my review, and opens a fix thread for each confirmed bug",
@@ -91,7 +91,7 @@ export const UTILITY_EXAMPLES: readonly UtilityExample[] = [
     label: "CLI command",
     icon: "Terminal",
     brief:
-      "adds a Cloudroom CLI command that deploys the current branch to staging and reports status",
+      "adds an Inari CLI command that deploys the current branch to staging and reports status",
   },
   {
     id: "background-service",

@@ -84,7 +84,7 @@ export function ThreadShareButton({ threadId }: { threadId: string }) {
           ) : signedIn ? (
             <Button type="button" disabled={busy || share.isPending} onClick={() => save.mutate()}>{save.isPending ? "Creating link…" : "Create link"}</Button>
           ) : (
-            <p className="text-xs text-muted-foreground">Sign in to Cloudroom to share threads.</p>
+            <p className="text-xs text-muted-foreground">Sign in to Inari to share threads.</p>
           )}
         </div>
       </PopoverContent>

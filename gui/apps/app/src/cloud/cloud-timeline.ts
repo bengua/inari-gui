@@ -190,7 +190,7 @@ export class CloudThreadEvents {
           type: "system/error",
           scope: threadScope(),
           threadId: this.threadId,
-          message: text(data.reason) || "Cloudroom execution failed",
+          message: text(data.reason) || "Inari execution failed",
         });
       }
       return out;

@@ -147,7 +147,7 @@ export function MachineAccessSettingsContent({
         <div className="min-w-0 flex-1">
           <p className="text-foreground">Connection method</p>
           <p className="text-xs text-subtle-foreground/75">
-            How new machines reach this Cloudroom server.
+            How new machines reach this Inari server.
           </p>
         </div>
         <MachineAccessMethodPicker machineAccess={machineAccess} />

@@ -53,9 +53,9 @@ export function ThreadTerminalPanel({
     <section
       aria-label="Terminal"
       data-app-terminal=""
-      className="flex h-full min-h-0 min-w-0 flex-col bg-sidebar"
+      className="flex h-full min-h-0 min-w-0 flex-col bg-sidebar p-3"
     >
-      <div className="min-h-0 flex-1 overflow-hidden bg-sidebar">
+      <div className="min-h-0 flex-1 overflow-hidden rounded-xl border border-border/60 bg-sidebar shadow-sm">
         <ThreadTerminalContent
           autoFocus={autoFocus}
           controller={terminalController}

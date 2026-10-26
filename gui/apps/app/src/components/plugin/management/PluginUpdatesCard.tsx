@@ -147,7 +147,7 @@ export function PluginDetailReleaseStatus({
           aria-hidden
         />
         <p className="min-w-0 text-xs leading-relaxed text-muted-foreground">
-          Cloudroom couldn&rsquo;t activate{" "}
+          Inari couldn&rsquo;t activate{" "}
           {displayPluginVersion(failure.version)}. It restored{" "}
           {displayPluginVersion(plugin.version)} and its data.
         </p>
@@ -203,7 +203,7 @@ export function PluginDetailReleaseStatus({
       <div className="min-w-0">
         <p className="text-xs leading-relaxed text-muted-foreground">
           {blockedReasons[0] === undefined
-            ? `${displayPluginVersion(blockedVersion)} isn’t compatible with this Cloudroom version.`
+            ? `${displayPluginVersion(blockedVersion)} isn’t compatible with this Inari version.`
             : sentence(blockedReasons[0])}{" "}
           {displayPluginVersion(plugin.version)} remains installed. Keep using
           it and check again when a compatible plugin version is available.

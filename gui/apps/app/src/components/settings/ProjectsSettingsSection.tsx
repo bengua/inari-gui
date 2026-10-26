@@ -43,7 +43,7 @@ import {
 } from "./sortable-settings-rows";
 
 const PROJECTS_SECTION_DESCRIPTION =
-  "Repositories Cloudroom can work in. Drag to change the order projects appear in the sidebar.";
+  "Repositories Inari can work in. Drag to change the order projects appear in the sidebar.";
 
 export function formatGitRemote(url: string): string {
   const sshMatch = /^[^@]+@([^:]+):(.+?)(?:\.git)?$/.exec(url);

@@ -332,7 +332,7 @@ const EMPTY_TERMINAL_SESSIONS: readonly TerminalSession[] = [];
 const DEFAULT_PULL_REQUEST_MERGE_METHOD: PullRequestMergeMethod = "merge";
 const PULL_REQUEST_MERGE_METHOD_STORAGE_KEY = "bb.pullRequest.mergeMethod";
 const REPORT_BUG_PROMPT =
-  "Using the 'feedback' tool you have, report the following thing to David, the founder of Cloudroom... ";
+  "Using the 'feedback' tool you have, report the following thing to David, the founder of Inari... ";
 
 function isPullRequestMergeMethod(
   value: string,

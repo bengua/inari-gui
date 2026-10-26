@@ -60,7 +60,7 @@ export function CloudroomAccountSettings() {
   const signedIn = account && !status.data?.signingIn;
   return <>
     {signedIn ? <section className="flex flex-col items-center gap-3 text-center">
-      <h2 className="sr-only">Cloudroom account</h2>
+      <h2 className="sr-only">Inari account</h2>
       <span aria-hidden className="grid size-14 place-items-center rounded-full bg-primary text-xl font-semibold text-primary-foreground">{account.email.charAt(0).toUpperCase()}</span>
       <div className="min-w-0 max-w-full">
         <p className="truncate text-base font-semibold text-foreground">{account.email}</p>
@@ -83,15 +83,15 @@ export function CloudroomAccountSettings() {
         {sync && syncBroken && <FixPrompt prompt={syncFixPrompt(sync.state, sync.issue)} />}
         {error && <p role="alert" className="text-sm">{error}</p>}
       </div>
-    </section> : <SettingsSection title="Cloudroom account" description="Sign in to connect your existing cloud VM. Local execution stays available.">
+    </section> : <SettingsSection title="Inari account" description="Sign in to connect your existing cloud VM. Local execution stays available.">
       <div className="space-y-3 text-sm">
-        <p>{account ? account.email : "Not signed in to Cloudroom"}</p>
-        {status.isError && <p role="alert">Could not reach the local Cloudroom backend.</p>}
+        <p>{account ? account.email : "Not signed in to Inari"}</p>
+        {status.isError && <p role="alert">Could not reach the local Inari backend.</p>}
         {error && <p role="alert">{error}</p>}
         {status.data?.signingIn ? <>
           <p role="status">Finish signing in and confirm your account in the browser.</p>
           <div className="flex gap-2">{signInUrl && <Button variant="outline" onClick={() => openUrlInExternalBrowser(signInUrl)}>Open browser again</Button>}<Button variant="outline" disabled={action.isPending} onClick={() => action.mutate("cancel")}>Cancel sign-in</Button></div>
-        </> : !status.data?.selfHosted && <div className="flex gap-2"><Button disabled={action.isPending || status.isPending || status.isError} onClick={() => action.mutate("sign-in")}>Sign in to Cloudroom</Button></div>}
+        </> : !status.data?.selfHosted && <div className="flex gap-2"><Button disabled={action.isPending || status.isPending || status.isError} onClick={() => action.mutate("sign-in")}>Sign in to Inari</Button></div>}
         {status.data && !account && !status.data.signingIn && <SelfHostedCoreForm connected={status.data.selfHosted === true} ready={status.data.ready} error={status.data.error} />}
       </div>
     </SettingsSection>}
@@ -115,7 +115,7 @@ function BillingRow() {
         <p className="text-foreground">Plan & billing</p>
         <p className="text-xs text-subtle-foreground/75">Your plan, usage, and invoices.</p>
       </div>
-      <Button variant="ghost" size="sm" className="text-muted-foreground" aria-label="Open plan and billing" onClick={() => openUrlInExternalBrowser("https://www.cloudroom.dev/billing")}>Open<Icon name="ExternalLink" aria-hidden /></Button>
+      <Button variant="ghost" size="sm" className="text-muted-foreground" aria-label="Open plan and billing" onClick={() => openUrlInExternalBrowser("https://freedzhost.cloud")}>Open<Icon name="ExternalLink" aria-hidden /></Button>
     </div>
   </div>;
 }

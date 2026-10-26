@@ -45,7 +45,7 @@ function track(step: SetupStepId, action: "viewed" | "started" | "done" | "skipp
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ step, action, detail, agents }),
   }).catch(() => {});
 }
-const LATER = ["Your Cloudroom account", "Claude Code or Codex", "For private repos", "Last step"];
+const LATER = ["Your Inari account", "Claude Code or Codex", "For private repos", "Last step"];
 const PALETTE = {
   "--ob-bg": "#faf7ef", "--ob-rail": "#f2ecde", "--ob-card": "#fffdf7", "--ob-line": "#e2dac6", "--ob-dash": "#c9bfa6",
   "--ob-ink": "#29251e", "--ob-muted": "#7a7263", "--ob-lime": "#bfff00", "--ob-ok": "#4d6b00", "--ob-green": "#17803f",
@@ -87,7 +87,7 @@ export function Onboarding() {
   const projects = useSidebarNavigation().data?.projects;
   const account = useCloudroomAccount();
   const locked = account.isSuccess && !account.data.account && !account.data.selfHosted;
-  const firstRun = !dismissed && projects !== undefined && projects.length === 0;
+  const firstRun = !dismissed && account.isSuccess && !account.data.selfHosted && projects !== undefined && projects.length === 0;
   // Stay open once shown: adding a folder or importing chats creates projects, which would otherwise end the first run mid-step.
   useEffect(() => { if (firstRun) setOpen(true); }, [firstRun, setOpen]);
   const visible = locked || open || firstRun;
@@ -160,13 +160,13 @@ function Setup({ locked, close }: { locked: boolean; close: () => void }) {
   if (progress.checking) return null;
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Set up Cloudroom" style={PALETTE} className="fixed inset-0 z-50 flex flex-col bg-(--ob-bg) text-(--ob-ink) duration-300 animate-in fade-in-0">
+    <div role="dialog" aria-modal="true" aria-label="Set up Inari" style={PALETTE} className="fixed inset-0 z-50 flex flex-col bg-(--ob-bg) text-(--ob-ink) duration-300 animate-in fade-in-0">
       <div className={cn("h-10 shrink-0 border-b border-(--ob-line) bg-(--ob-rail)", MACOS_WINDOW_DRAG_CLASS)} />
       <div className="flex min-h-0 flex-1">
         <aside className="flex w-[300px] shrink-0 flex-col border-r border-(--ob-line) bg-(--ob-rail) px-[22px] pt-7 pb-6">
           <div className="flex items-center gap-2.5 text-base font-semibold tracking-tight">
             <BbLogo className="size-7" />
-            cloudroom
+            inari
           </div>
           <p className="mt-10 mb-3 ml-3 text-[11px] tracking-[0.14em] text-(--ob-muted) uppercase">Setup</p>
           <ol className="flex flex-col gap-2">
@@ -355,7 +355,7 @@ function AccountStep({ email, signingIn, next }: { email: string | null; signing
   const start = () => { track("account", "started"); signIn.mutate("signIn"); };
   return (
     <>
-      <Heading lead="Sign in to" mark="Cloudroom" />
+      <Heading lead="Sign in to" mark="Inari" />
       {email ? (
         <div className="mt-8 flex items-center gap-5">
           <Cta onClick={next}>Continue <Icon name="ArrowRight" aria-hidden /></Cta>
@@ -368,7 +368,7 @@ function AccountStep({ email, signingIn, next }: { email: string | null; signing
         </div>
       ) : (
         <>
-          <p className="mt-3 text-base text-(--ob-muted)">Use the account you made on cloudroom.dev.</p>
+          <p className="mt-3 text-base text-(--ob-muted)">Use the account you made on freedzhost.cloud.</p>
           <div className="mt-8 flex flex-col items-start gap-4">
             <Cta onClick={start}>Sign in with browser <Icon name="ArrowRight" aria-hidden /></Cta>
             <Note>Already signed in there? You come right back.</Note>

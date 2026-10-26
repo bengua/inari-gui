@@ -38,7 +38,7 @@ export function CloudUsageLimitNotice() {
           </Button>
         )}
         {plan !== "free" && (ask.isSuccess
-          ? <p role="status" className="text-muted-foreground">Sent. The Cloudroom team will reach out to set up a quick call.</p>
+          ? <p role="status" className="text-muted-foreground">Sent. The Inari team will reach out to set up a quick call.</p>
           : <Button type="button" size="sm" variant={upgrade ? "outline" : "default"} disabled={ask.isPending} onClick={() => ask.mutate()}>Ask for more usage</Button>)}
       </div>
       {ask.error && <p role="alert" className="text-destructive">{ask.error.message}</p>}
@@ -73,7 +73,7 @@ export function CloudDiskNotice({ disk }: { disk: CloudDisk }) {
       </div>
       {open && (
         <p className="px-3 pb-2.5 text-muted-foreground">
-          {measured ? "Cloudroom stops the command filling the disk within 30 seconds, then work resumes. Then ask the agent to delete what it no longer needs, like build output, caches, or node_modules." : "Your files and history are kept. Work resumes once the disk can be checked again."}
+          {measured ? "Inari stops the command filling the disk within 30 seconds, then work resumes. Then ask the agent to delete what it no longer needs, like build output, caches, or node_modules." : "Your files and history are kept. Work resumes once the disk can be checked again."}
         </p>
       )}
     </PromptStackCard>

@@ -134,7 +134,7 @@ function UpdatePluginDialogContent({
               aria-hidden
             />
             <span>
-              Cloudroom couldn&rsquo;t activate{" "}
+              Inari couldn&rsquo;t activate{" "}
               {displayPluginVersion(failure.version)}. It restored{" "}
               {displayPluginVersion(plugin.version)} and its data.
             </span>
@@ -204,7 +204,7 @@ function UpdatePluginDialogContent({
             <span className="font-medium" style={SUCCESS_TEXT_STYLE}>
               ✓
             </span>
-            <span>Compatible with your Cloudroom version and plugin SDK</span>
+            <span>Compatible with your Inari version and plugin SDK</span>
           </div>
           <DetailsDisclosure summary="Details — source, versions">
             <KeyValueGrid
@@ -266,7 +266,7 @@ function UpdatePluginDialogContent({
             />
             <span>
               {displayPluginVersion(blocked)} isn&rsquo;t compatible with this
-              Cloudroom
+              Inari
             </span>
           </div>
           <DetailsDisclosure summary="Details" defaultExpanded>

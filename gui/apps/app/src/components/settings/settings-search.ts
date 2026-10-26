@@ -63,7 +63,7 @@ const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
     ["New branch prefix", "branch name worktree"],
     ["Delete archived worktrees after", "worktree cleanup auto delete retention days never"],
   ]),
-  ...entries("general", "Skills", [["Cloudroom CLI skills", "install agents"]]),
+  ...entries("general", "Skills", [["Inari CLI skills", "install agents"]]),
   ...entries("general", "Thread naming", [
     ["Thread naming", "title rename name"],
     ["Model", "thread naming llm harness provider fallback"],
@@ -154,7 +154,7 @@ const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
   ...entries("export", undefined, [["Export chats", "history backup download markdown json"]]),
   ...entries("archived", undefined, [["Archived threads", "restore unarchive"]]),
   ...entries("machines", undefined, [
-    ["Cloudroom account", "sign in login email account sign out"],
+    ["Inari account", "sign in login email account sign out"],
     ["Plan & billing", "billing plan subscription invoices upgrade pro ultra payment"],
     ["Or connect your own Core", "self-hosted core url api token server"],
     ["Mac access", "cloud agents permission full read-only ask off"],
@@ -164,7 +164,7 @@ const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
     ["Machine environment", "environment variables path gh_token shell"],
   ]),
   ...entries("updates", undefined, [
-    ["Cloudroom daemon", "version update restart"],
+    ["Inari daemon", "version update restart"],
     ["Machine updates", "update version"],
   ]),
   ...entries("marketplaces", undefined, [
@@ -175,7 +175,7 @@ const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
     ["Command Guard", "safety dangerous commands rm block protect"],
   ]),
   ...entries("system-prompt", undefined, [
-    ["Cloudroom system prompt", "instructions agents"],
+    ["Inari system prompt", "instructions agents"],
   ]),
   ...entries("experiments", "Experiments", [
     ["Changelog preview", "beta release notes"],

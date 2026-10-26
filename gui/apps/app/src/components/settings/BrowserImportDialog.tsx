@@ -154,7 +154,7 @@ export function BrowserImportDialog({
               {title(`Allow Full Disk Access for ${source.name}`)}
               <DialogDescription>
                 {source.name} keeps its cookies in a protected folder. Turn on
-                Full Disk Access for Cloudroom in System Settings → Privacy &amp;
+                Full Disk Access for Inari in System Settings → Privacy &amp;
                 Security, then come back. You can turn it off again after the
                 import.
               </DialogDescription>
@@ -162,7 +162,7 @@ export function BrowserImportDialog({
             {step.checked ? (
               <p className="text-xs text-destructive-text">
                 Full Disk Access is still off. macOS may require quitting and
-                reopening Cloudroom before the grant applies.
+                reopening Inari before the grant applies.
               </p>
             ) : null}
             <DialogFooter>
@@ -218,7 +218,7 @@ export function BrowserImportDialog({
             <DialogHeader>
               {title(`Import from ${source.name}`)}
               <DialogDescription>
-                Which profile's cookies should be copied into the Cloudroom browser?
+                Which profile's cookies should be copied into the Inari browser?
               </DialogDescription>
             </DialogHeader>
             <div

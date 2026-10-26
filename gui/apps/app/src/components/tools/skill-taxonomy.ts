@@ -9,8 +9,8 @@ const SKILL_ROOT_LABELS: Record<
   string
 > = {
   "bb-builtin": "Built-in",
-  "bb-user": "Cloudroom · user",
-  "bb-project": "Cloudroom · project",
+  "bb-user": "Inari · user",
+  "bb-project": "Inari · project",
   "shared-user": "Shared · user",
   "shared-project": "Shared · project",
   plugin: "Plugin",

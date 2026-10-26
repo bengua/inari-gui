@@ -477,16 +477,8 @@ export function FilePreview({
     usesIframeLayout || usesCsvPreviewLayout || usesCodeLayout;
   const usesContentHeightLayout = usesMarkdownPreviewLayout;
 
-  return (
-    <div
-      className={
-        usesFullHeightLayout
-          ? "@container/page flex h-full min-h-0 flex-col"
-          : usesContentHeightLayout
-            ? "@container/page flex min-h-full flex-col"
-            : "@container/page min-h-full"
-      }
-    >
+  const previewInner = (
+    <>
       {headerMode === "file" ? (
         <FilePreviewHeader
           path={path}
@@ -516,6 +508,32 @@ export function FilePreview({
         onSelectionAddToChat={onSelectionAddToChat}
         onDownload={onDownload}
       />
+    </>
+  );
+
+  // Full-height previews (code, CSV, iframe) render as an inset card — a
+  // bordered, rounded surface that reads as a self-contained artifact, matching
+  // the terminal panel. Content-height previews (markdown) keep their flowing
+  // layout so their sticky header still tracks the panel scroll container.
+  if (usesFullHeightLayout) {
+    return (
+      <div className="h-full min-h-0 p-3">
+        <div className="@container/page flex h-full min-h-0 flex-col overflow-hidden rounded-xl border border-border/60 bg-sidebar shadow-sm">
+          {previewInner}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={
+        usesContentHeightLayout
+          ? "@container/page flex min-h-full flex-col"
+          : "@container/page min-h-full"
+      }
+    >
+      {previewInner}
     </div>
   );
 }
@@ -958,12 +976,14 @@ function MarkdownFilePreview({
 }: MarkdownFilePreviewProps) {
   return (
     <SecondaryPanelSelectionActions onSelectionAddToChat={onSelectionAddToChat}>
-      <div className="flex-auto bg-background px-4 py-4">
-        <MarkdownPreview
-          allowHtml
-          content={file.contents}
-          linkRouting={markdownLinkRouting}
-        />
+      <div className="flex-auto bg-background px-4 py-4 @[34rem]/page:px-8 @[34rem]/page:py-6">
+        <div className="mx-auto w-full max-w-[72ch]">
+          <MarkdownPreview
+            allowHtml
+            content={file.contents}
+            linkRouting={markdownLinkRouting}
+          />
+        </div>
       </div>
     </SecondaryPanelSelectionActions>
   );

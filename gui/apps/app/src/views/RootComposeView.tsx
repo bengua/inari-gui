@@ -147,6 +147,7 @@ import {
   RootComposeSecondaryContent,
 } from "./RootComposeSecondaryContent";
 import { RootComposeMobileRecents } from "./RootComposeMobileRecents";
+import { FoxMascot } from "@/components/FoxMascot";
 import {
   shouldLoadThreadStorageFileList,
   useThreadStorageViewer,
@@ -1991,6 +1992,7 @@ function RootComposeSurface({
               contentClassName={
                 ROOT_COMPOSE_SIDEBAR_ACTION_ALIGNED_TOP_PADDING_CLASS
               }
+              compactMascot={<FoxMascot variant="compact" />}
               compactScrollContent={
                 <RootComposeMobileRecents
                   highlightedThreadId={lastCreatedThreadId}

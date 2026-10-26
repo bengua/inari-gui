@@ -46,7 +46,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     | (T & { error?: string })
     | null;
   if (!response.ok || value === null)
-    throw new Error(value?.error ?? "Cloudroom is unreachable. Try again.");
+    throw new Error(value?.error ?? "Inari is unreachable. Try again.");
   return value;
 }
 

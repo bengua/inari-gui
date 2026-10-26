@@ -1,4 +1,4 @@
-// Plugin SDK 0.6 frontend APIs (BB desktop 0.46.1) that Cloudroom's app had no
+// Plugin SDK 0.6 frontend APIs (BB desktop 0.46.1) that Inari's app had no
 // host for. Cheap ones are real; the sidebar-replacement and thread-action
 // surfaces (BB's navigation rail, not ported) return empty, neutral state so
 // plugins load and render without them.
@@ -51,7 +51,7 @@ function useComposers() {
 }
 
 function unsupported(name: string): never {
-  throw new Error(`${name} is not supported in Cloudroom yet.`);
+  throw new Error(`${name} is not supported in Inari yet.`);
 }
 
 export const pluginSdkCompat: Compat = {

@@ -1,7 +1,7 @@
 import type { ServerAccessStatus } from "@cloudroom/server-contract";
 import { isLocalOnlyUrl } from "@/lib/loopback-hostname";
 
-export const MACHINE_SERVER_ACCESS_TITLE = "Machines cannot reach this Cloudroom server yet";
+export const MACHINE_SERVER_ACCESS_TITLE = "Machines cannot reach this Inari server yet";
 
 export function machineServerAccessReady(
   access: ServerAccessStatus | undefined,
@@ -17,7 +17,7 @@ export function machineServerAccessReady(
 }
 
 export const MACHINE_SERVER_ACCESS_UNSET_REASON =
-  "Configure how machines should connect to this Cloudroom server.";
+  "Configure how machines should connect to this Inari server.";
 
 export function machineServerAccessBlockedReason(
   access: ServerAccessStatus | undefined,

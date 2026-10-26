@@ -53,7 +53,7 @@ initializeFavicon();
 const root = createRoot(document.getElementById("root")!, {
   onUncaughtError: (error, errorInfo) => {
     console.error(
-      "[Cloudroom] uncaught render error — the app root was torn down",
+      "[Inari] uncaught render error — the app root was torn down",
       error,
       errorInfo.componentStack,
     );

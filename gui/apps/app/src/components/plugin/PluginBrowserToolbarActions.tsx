@@ -49,7 +49,7 @@ export function PluginBrowserToolbarActions({
 const UNSUPPORTED_BROWSER_PAGE: ExperimentalPluginBrowserPage = {
   evaluate: () =>
     Promise.reject(
-      new Error("experimental_page.evaluate is not supported in Cloudroom yet."),
+      new Error("experimental_page.evaluate is not supported in Inari yet."),
     ),
   onMessage: () => () => {},
 };

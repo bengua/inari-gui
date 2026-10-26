@@ -22,7 +22,7 @@ export function getFollowUpPromptPlaceholder(
     case "pending":
     case "idle":
     case "active":
-      return "Ask Cloudroom";
+      return "Ask Inari";
     default:
       return assertNever(displayStatus);
   }
@@ -47,7 +47,7 @@ export function getCompactFollowUpPromptPlaceholder(
     case "pending":
     case "idle":
     case "active":
-      return "Ask Cloudroom";
+      return "Ask Inari";
     default:
       return assertNever(displayStatus);
   }

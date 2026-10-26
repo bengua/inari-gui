@@ -279,9 +279,9 @@ const SETTINGS_DROPDOWN_CONTENT_CLASS =
   "min-w-[var(--radix-dropdown-menu-trigger-width)]";
 
 const CREATE_CUSTOM_PALETTE_PROMPT =
-  "Create a custom Cloudroom palette. First run `room-cli theme dir` to find the custom theme directory. Ask me for the palette name and visual direction, then create `<theme-dir>/<name>/theme.css` with light and dark theme variables compatible with Cloudroom's theme tokens.";
+  "Create a custom Inari palette. First run `room-cli theme dir` to find the custom theme directory. Ask me for the palette name and visual direction, then create `<theme-dir>/<name>/theme.css` with light and dark theme variables compatible with Inari's theme tokens.";
 const PALETTE_SETTING_DESCRIPTION =
-  "Palettes change Cloudroom's colors, including syntax colors in diffs and file previews. Choose a built-in palette or create one from a prompt.";
+  "Palettes change Inari's colors, including syntax colors in diffs and file previews. Choose a built-in palette or create one from a prompt.";
 
 interface PaletteMenuItemProps {
   active: boolean;
@@ -578,10 +578,10 @@ export function LocalOpenTargetSettingsSection({
     const accessDenied = accessState === "denied";
     const accessAvailable = accessState === "available";
     const descriptionText = accessDenied
-      ? "Your browser blocked access to Cloudroom on this device. Allow local network access for this site in browser settings, then reload Cloudroom."
+      ? "Your browser blocked access to Inari on this device. Allow local network access for this site in browser settings, then reload Inari."
       : accessAvailable
-        ? "Cloudroom couldn’t connect to its local editor helper. Make sure the Cloudroom desktop app or CLI is running on this device, then retry. If it is already running, a remote browser origin may need to be configured."
-        : "Connect this browser to Cloudroom on this device so it can discover installed editors. Cloudroom only contacts the local helper after you choose Enable; your browser may ask for local network access.";
+        ? "Inari couldn’t connect to its local editor helper. Make sure the Inari desktop app or CLI is running on this device, then retry. If it is already running, a remote browser origin may need to be configured."
+        : "Connect this browser to Inari on this device so it can discover installed editors. Inari only contacts the local helper after you choose Enable; your browser may ask for local network access.";
     const buttonLabel = accessRequestPending
       ? accessAvailable
         ? "Retrying…"
@@ -701,7 +701,7 @@ function ManagedBranchPrefixSetting({
       label={MANAGED_BRANCH_PREFIX_SETTING_LABEL}
       description={
         valid ? (
-          `Cloudroom puts this in front of every branch it creates for a worktree, such as ${draft}${MANAGED_BRANCH_PREFIX_EXAMPLE_SLUG}. Leave it empty for no prefix.`
+          `Inari puts this in front of every branch it creates for a worktree, such as ${draft}${MANAGED_BRANCH_PREFIX_EXAMPLE_SLUG}. Leave it empty for no prefix.`
         ) : (
           <span className="text-destructive" role="alert">
             This prefix cannot start a valid git branch name.
@@ -1018,7 +1018,7 @@ export function GeneralSettingsSection({
           {desktopBrowserAvailable ? (
             <SettingsWithControl
               label={IN_APP_BROWSER_LINK_SETTING_LABEL}
-              description="Open web links inside Cloudroom."
+              description="Open web links inside Inari."
             >
               <Switch
                 checked={openLinksInAppBrowser}
@@ -1130,7 +1130,7 @@ export function PrivacySettingsSection({
 
         <SettingsWithControl
           label="Share usage data and setup errors"
-          description="Send app starts, thread and message counts, plugin installs, and short letters-only settings searches that find nothing to help improve Cloudroom. Failed agent connects and installs are saved with your account so we can fix them. Turning this off takes effect immediately for this server. Details: cloudroom.dev/privacy."
+          description="Send app starts, thread and message counts, plugin installs, and short letters-only settings searches that find nothing to help improve Inari. Failed agent connects and installs are saved with your account so we can fix them. Turning this off takes effect immediately for this server. Details: freedzhost.cloud."
         >
           <Switch
             checked={telemetryEnabled}
@@ -1142,7 +1142,7 @@ export function PrivacySettingsSection({
 
         <SettingsWithControl
           label="Send agent feedback"
-          description="Let your agents send Cloudroom bugs, friction, and ideas straight to our founder, so we can fix them fast. Never your code or secrets."
+          description="Let your agents send Inari bugs, friction, and ideas straight to our founder, so we can fix them fast. Never your code or secrets."
         >
           <Switch
             checked={bugReportsEnabled}
@@ -1443,13 +1443,13 @@ export function SettingsView() {
     );
   } else if (activeSection === "system-prompt") {
     content = (
-      <SettingsSection title="System prompt" description="Cloudroom's built-in instructions for every Local and Cloud agent: how Cloudroom works, Git rules, and building defaults. Project and custom instructions still apply. Start a new session after changing this setting.">
-        <SettingsWithControl label="Cloudroom system prompt" description="Recommended. Turn off only if your own instructions cover this.">
+      <SettingsSection title="System prompt" description="Inari's built-in instructions for every Local and Cloud agent: how Inari works, Git rules, and building defaults. Project and custom instructions still apply. Start a new session after changing this setting.">
+        <SettingsWithControl label="Inari system prompt" description="Recommended. Turn off only if your own instructions cover this.">
           <Switch
             checked={generalSettings.systemPromptEnabled}
             disabled={systemConfigQuery.data === undefined || updateGeneralSettingsMutation.isPending}
             onCheckedChange={(enabled) => updateGeneralSettingsMutation.mutate({ ...generalSettings, systemPromptEnabled: enabled })}
-            aria-label="Cloudroom system prompt"
+            aria-label="Inari system prompt"
           />
         </SettingsWithControl>
         {updateGeneralSettingsMutation.error && <p role="alert">{updateGeneralSettingsMutation.error.message}</p>}

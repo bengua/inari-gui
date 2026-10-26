@@ -18,7 +18,7 @@ import {
 } from "@/hooks/queries/plugin-settings-queries";
 import { pluginAdminErrorMessage } from "@/lib/plugin-admin-error";
 
-// Safe mode stops every plugin that doesn't ship with Cloudroom, so a broken
+// Safe mode stops every plugin that doesn't ship with Inari, so a broken
 // plugin can be ruled out in one click. Turning it off restores the rest.
 function usePluginSafeModeToggle() {
   const queryClient = useQueryClient();
@@ -52,7 +52,7 @@ function usePluginSafeModeToggle() {
 export function PluginSafeModeButton() {
   const { safeMode, toggle } = usePluginSafeModeToggle();
   if (safeMode !== false) return null;
-  const label = "Turn on safe mode: stop every plugin that doesn't ship with Cloudroom";
+  const label = "Turn on safe mode: stop every plugin that doesn't ship with Inari";
   return (
     <TooltipProvider delayDuration={250}>
       <Tooltip>
@@ -90,7 +90,7 @@ export function PluginSafeModeBanner() {
     >
       <Icon name="SecurityCheck" className="size-4 shrink-0 text-warning" aria-hidden />
       <p className="min-w-0 flex-1 text-sm text-foreground">
-        Plugin safe mode is on. Only plugins that ship with Cloudroom are running.
+        Plugin safe mode is on. Only plugins that ship with Inari are running.
       </p>
       <Button
         type="button"

@@ -88,9 +88,9 @@ export const APP_COMMAND_GROUPS: readonly AppCommandGroup[] = [
       paletteHiddenCommand(
         "palette.open",
         "Open quick palette",
-        "Search and run Cloudroom commands from the keyboard.",
+        "Search and run Inari commands from the keyboard.",
       ),
-      command("window.new", "New window", "Open another Cloudroom desktop window."),
+      command("window.new", "New window", "Open another Inari desktop window."),
       command(
         "app.back",
         "Back to app",
@@ -106,11 +106,11 @@ export const APP_COMMAND_GROUPS: readonly AppCommandGroup[] = [
         "Go forward",
         "Go forward to the screen you just left.",
       ),
-      command("settings.open", "Open settings", "Open Cloudroom settings."),
+      command("settings.open", "Open settings", "Open Inari settings."),
       command(
         "settings.openServers",
         "Open server settings",
-        "Open settings to add or manage Cloudroom servers.",
+        "Open settings to add or manage Inari servers.",
       ),
       command(
         "sidebar.toggle",
@@ -167,7 +167,7 @@ export const APP_COMMAND_GROUPS: readonly AppCommandGroup[] = [
       command(
         "logs.openServerDaemon",
         "Open server and daemon logs",
-        "Open the desktop log viewer for the Cloudroom server and host daemon.",
+        "Open the desktop log viewer for the Inari server and host daemon.",
       ),
       command(
         "notifications.open",
@@ -272,7 +272,7 @@ export const APP_COMMAND_GROUPS: readonly AppCommandGroup[] = [
       paletteHiddenCommand(
         id,
         `Choose answer ${index + 1}`,
-        `Choose visible answer ${index + 1} when Cloudroom asks a question.`,
+        `Choose visible answer ${index + 1} when Inari asks a question.`,
       ),
     ),
   },

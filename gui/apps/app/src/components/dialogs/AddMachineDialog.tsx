@@ -115,7 +115,7 @@ function SetupMethodPicker({
           {
             value: "ssh",
             label: "SSH",
-            description: "Cloudroom connects with your SSH keys.",
+            description: "Inari connects with your SSH keys.",
           },
         ]}
         onChange={onChange}
@@ -331,7 +331,7 @@ export function ManualMachineSetupView({
           }
         >
           {errorMessage ??
-            "Run this command on the machine you want to add. It installs Cloudroom and keeps the machine connected to this server."}
+            "Run this command on the machine you want to add. It installs Inari and keeps the machine connected to this server."}
         </DialogDescription>
       </DialogHeader>
       {methodPicker}
@@ -474,7 +474,7 @@ export function SshMachineSetup({
       <DialogHeader>
         <DialogTitle>Add a machine</DialogTitle>
         <DialogDescription>
-          Cloudroom connects with your SSH keys, installs itself, and keeps the
+          Inari connects with your SSH keys, installs itself, and keeps the
           machine connected to this server.
         </DialogDescription>
       </DialogHeader>

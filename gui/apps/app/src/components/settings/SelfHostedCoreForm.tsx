@@ -4,7 +4,7 @@ import { Button } from "@cloudroom/shared-ui/button";
 import { Input } from "@cloudroom/shared-ui/input";
 import { sdk } from "@/lib/sdk";
 
-/** Connects a core the user hosts, by URL and token, without a Cloudroom account (core docs/setup.md). */
+/** Connects a core the user hosts, by URL and token, without an Inari account (core docs/setup.md). */
 export function SelfHostedCoreForm({ connected, ready, error }: { connected: boolean; ready: boolean; error: string | null }) {
   const queryClient = useQueryClient();
   const [url, setUrl] = useState("");

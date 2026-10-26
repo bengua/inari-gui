@@ -374,7 +374,7 @@ import { reasoningLevelLabel } from "@/lib/reasoning-labels";
 import { useCopyCommand } from "@/hooks/useCopyCommand";
 
 const plainCloudError = (error: string) =>
-  error.includes("storage unsafe") ? "Cloud disk is full" : error.replace(/^Cloudroom rejected the request \(HTTP \d+\): /, "");
+  error.includes("storage unsafe") ? "Cloud disk is full" : error.replace(/^Inari rejected the request \(HTTP \d+\): /, "");
 
 export function ThreadDetailPromptArea({
   activeBackgroundAgentCount,

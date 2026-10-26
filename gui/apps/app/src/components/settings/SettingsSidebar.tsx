@@ -272,7 +272,7 @@ function SettingsAccountCard() {
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm">
-          {email ?? "Sign in to Cloudroom"}
+          {email ?? "Sign in to Inari"}
         </span>
         <span className="block truncate text-xs text-muted-foreground">
           {!email

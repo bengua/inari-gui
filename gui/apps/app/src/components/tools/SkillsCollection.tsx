@@ -54,7 +54,7 @@ function providerLabel(
   provider: SkillProvider | null,
   providerRoster: ProviderRoster,
 ): string {
-  if (provider === null) return "Cloudroom";
+  if (provider === null) return "Inari";
   return providerRoster.get(provider)?.displayName ?? provider;
 }
 
@@ -66,7 +66,7 @@ function providerFilterLabel(
   provider: ResourceProviderFilter,
   providerRoster: ProviderRoster,
 ): string {
-  return provider === "bb" ? "Cloudroom" : providerLabel(provider, providerRoster);
+  return provider === "bb" ? "Inari" : providerLabel(provider, providerRoster);
 }
 
 function skillSourceFilterId(skill: SkillSummary): ResourceSkillSourceFilter {
@@ -234,11 +234,11 @@ const SKILLS_BROWSE_DESCRIPTION = (
     >
       skills.sh
     </a>
-    . Install one and every agent you use in Cloudroom can run it.
+    . Install one and every agent you use in Inari can run it.
   </>
 );
 const SKILLS_LIBRARY_DESCRIPTION =
-  "The skills on this Cloudroom host — yours, your providers', and those bundled with plugins. They work with every agent you use in Cloudroom.";
+  "The skills on this Inari host — yours, your providers', and those bundled with plugins. They work with every agent you use in Inari.";
 
 const PREFETCH_HOVER_INTENT_MS = 150;
 
@@ -540,7 +540,7 @@ export function SkillsOverview({
               action={
                 <CreateWithTemplatesButton
                   kind="skill"
-                  label="New Cloudroom skill"
+                  label="New Inari skill"
                   onCreate={onCreateSkill}
                 />
               }
@@ -695,7 +695,7 @@ export function SkillDetailDialogView({
         skill.scope === "bb-builtin"
           ? {
               label: "Cloudroom Official",
-              tooltip: "Ships with Cloudroom",
+              tooltip: "Ships with Inari",
               accessibleLabel: `${skill.name} is Cloudroom Official`,
             }
           : bundledPluginName !== null

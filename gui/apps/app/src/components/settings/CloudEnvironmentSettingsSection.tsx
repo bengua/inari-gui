@@ -44,13 +44,13 @@ export function CloudEnvironmentSettingsSection() {
         <div className="min-w-0">
           <h2 className="text-base font-semibold text-foreground">Cloud environment</h2>
           <p className="mt-1 max-w-xl text-xs leading-relaxed text-subtle-foreground">
-            Every new cloud thread starts with these skills, MCP servers, API keys, GitHub repos, and this setup. Change them here or on your cloudroom.dev dashboard. Both stay in sync.
+            Every new cloud thread starts with these skills, MCP servers, API keys, GitHub repos, and this setup. Change them here or on your freedzhost.cloud dashboard. Both stay in sync.
           </p>
         </div>
         {data && !environment.isError && (
           <span className="inline-flex shrink-0 items-center gap-1.5 self-start rounded-full border border-border bg-surface-recessed px-2.5 py-1 text-2xs text-subtle-foreground">
             <span className="size-1.5 rounded-full bg-success" />
-            Synced with cloudroom.dev
+            Synced with freedzhost.cloud
           </span>
         )}
       </header>
@@ -114,7 +114,7 @@ function CopyLoginsCard() {
   );
 }
 
-/** The GitHub account cloud agents clone and push as. Separate from how the user signs in to Cloudroom. */
+/** The GitHub account cloud agents clone and push as. Separate from how the user signs in to Inari. */
 function GithubCard() {
   const queryClient = useQueryClient();
   const requestId = useRef<string | null>(null);

@@ -127,7 +127,7 @@ class CloudServer {
             message:
               failure instanceof Error
                 ? failure.message
-                : "Cloudroom is unreachable.",
+                : "Inari is unreachable.",
           },
           503,
         );

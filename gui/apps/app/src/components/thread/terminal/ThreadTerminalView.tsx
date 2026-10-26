@@ -879,7 +879,7 @@ export function ThreadTerminalView({
         convertEol: true,
         cursorBlink: true,
         fontFamily: readTerminalFontFamily(),
-        fontSize: 12,
+        fontSize: 13,
         scrollback: 10_000,
         theme: buildTerminalTheme(),
       });
@@ -1155,7 +1155,7 @@ export function ThreadTerminalView({
     >
       <ContextMenuTrigger asChild disabled={!hasTerminalContextMenuTarget}>
         <div
-          className="h-full min-h-0 w-full overflow-hidden bg-sidebar p-2"
+          className="h-full min-h-0 w-full overflow-hidden bg-sidebar px-4 py-3"
           onContextMenuCapture={captureTerminalContextMenu}
           onPointerDown={handleTerminalPointerDown}
           onPointerUp={handleTerminalPointerRelease}

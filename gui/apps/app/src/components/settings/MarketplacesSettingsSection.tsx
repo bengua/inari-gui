@@ -66,7 +66,7 @@ export function MarketplacesSettingsSection() {
         return;
       }
       appToast.error("Refreshing the marketplace failed", {
-        description: `${failed[0]?.error ?? "Unknown error"}. The last catalog Cloudroom validated is still in use.`,
+        description: `${failed[0]?.error ?? "Unknown error"}. The last catalog Inari validated is still in use.`,
       });
     },
     onError: (error) => {
@@ -99,7 +99,7 @@ export function MarketplacesSettingsSection() {
   return (
     <SettingsSection
       title="Plugin marketplaces"
-      description="Cloudroom reads plugin catalogs from these marketplaces. Adding one validates and caches its catalog; it never installs, updates, or runs plugin code."
+      description="Inari reads plugin catalogs from these marketplaces. Adding one validates and caches its catalog; it never installs, updates, or runs plugin code."
       bodyClassName="border-0 bg-transparent p-0"
     >
       <div className="space-y-1.5">
@@ -122,7 +122,7 @@ export function MarketplacesSettingsSection() {
         </div>
         <p className="text-2xs text-subtle-foreground">
           An https manifest URL, <code>git:&lt;url&gt;[@&lt;ref&gt;]</code>, or{" "}
-          <code>path:&lt;directory&gt;</code> on the Cloudroom server&rsquo;s machine.
+          <code>path:&lt;directory&gt;</code> on the Inari server&rsquo;s machine.
         </p>
       </div>
 
@@ -141,7 +141,7 @@ export function MarketplacesSettingsSection() {
                 {marketplace.official ? (
                   <Badge variant="outline" className="text-2xs font-normal">
                     {marketplace.name === "bb-official"
-                      ? "By Cloudroom"
+                      ? "By Inari"
                       : "By BB"}
                   </Badge>
                 ) : null}

@@ -7,8 +7,8 @@ import {
 import { openUrlInExternalBrowser } from "@/lib/url-open-routing";
 import { CHANGELOG_LINKS } from "./changelog-preview";
 
-const WEBSITE_URL = "https://www.cloudroom.dev";
-const GITHUB_REPO_URL = "https://github.com/davidondrej/cloudroom-gui";
+const WEBSITE_URL = "https://freedzhost.cloud";
+const GITHUB_REPO_URL = "https://freedzhost.cloud";
 const BB_CREDIT_URL = "https://github.com/get-bb/bb";
 
 interface CommunityLinkRowProps {
@@ -53,7 +53,7 @@ export function CommunitySettingsSection() {
   return (
     <SettingsSection
       title="Community"
-      description="Follow Cloudroom development and learn how to get started."
+      description="Follow Inari development and learn how to get started."
     >
       <div className="space-y-5">
         <CommunityLinkRow
@@ -61,18 +61,18 @@ export function CommunitySettingsSection() {
           description="Product updates, blog posts, and security details."
           href={WEBSITE_URL}
           icon="Globe"
-          openLabel="Visit cloudroom.dev"
+          openLabel="Visit freedzhost.cloud"
         />
         <CommunityLinkRow
           label="GitHub"
-          description="Source code, issues, and contributions for the Cloudroom GUI."
+          description="Source code, issues, and contributions for the Inari GUI."
           href={GITHUB_REPO_URL}
           icon="GithubLogo"
           openLabel="View on GitHub"
         />
         <CommunityLinkRow
           label="Getting started"
-          description="Build the GUI and connect to Cloudroom."
+          description="Build the GUI and connect to Inari."
           href={`${GITHUB_REPO_URL}#readme`}
           icon="Explore"
           openLabel="Read the guide"
@@ -80,7 +80,7 @@ export function CommunitySettingsSection() {
         {CHANGELOG_LINKS.page !== null ? (
           <CommunityLinkRow
             label="Changelog"
-            description="Cloudroom release notes and manual update information."
+            description="Inari release notes and manual update information."
             href={CHANGELOG_LINKS.page}
             icon="ExternalLink"
             openLabel="Read the changelog"

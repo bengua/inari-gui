@@ -126,7 +126,7 @@ export function SidebarUpdatesBadge({ onNavigate }: SidebarUpdatesBadgeProps) {
 
   const updatesRoutePath = getSettingsRoutePath("updates");
   const bbLabel =
-    bbUpdateCount === 1 ? "Cloudroom update available" : "Cloudroom updates available";
+    bbUpdateCount === 1 ? "Inari update available" : "Inari updates available";
   const providerLabel = `${joinNames(
     staleProviders.map((stale) => stale.displayName),
   )} ${staleProviders.length === 1 ? "update" : "updates"} available`;
@@ -156,7 +156,7 @@ export function SidebarUpdatesBadge({ onNavigate }: SidebarUpdatesBadgeProps) {
               className={CHIP_CLASS}
             >
               <Icon name="Download" className="size-3 text-muted-foreground" />
-              Cloudroom
+              Inari
             </Link>
           </TooltipTrigger>
           <TooltipContent side="top">{bbLabel}</TooltipContent>

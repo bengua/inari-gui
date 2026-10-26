@@ -66,7 +66,7 @@ const PERMISSION_MODE_PRESENTATION: Record<
 ) as Record<PermissionMode, (typeof PERMISSION_MODE_OPTIONS)[number]>;
 
 const PRIMARY_REMOVE_DISABLED_REASON =
-  "Cloudroom's primary machine can't be removed.";
+  "Inari's primary machine can't be removed.";
 
 const MACHINE_MENU_ITEM_CLASS = "min-h-9 px-2.5 py-2";
 
@@ -418,7 +418,7 @@ export function MachinesSettingsSection() {
         title="Machines"
         description={
           macs.length > 1
-            ? "Every Mac signed in to your Cloudroom account shows up here by itself."
+            ? "Every Mac signed in to your Inari account shows up here by itself."
             : undefined
         }
         bodyClassName="flex flex-col gap-3"

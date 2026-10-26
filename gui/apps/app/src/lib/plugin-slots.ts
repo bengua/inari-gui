@@ -249,7 +249,7 @@ function flattenRegistrations(
   ];
   for (const registration of unsupported) {
     console.warn(
-      `plugin ${pluginId}: ${registration} ignored — not supported in Cloudroom yet`,
+      `plugin ${pluginId}: ${registration} ignored — not supported in Inari yet`,
     );
   }
   const sidebarFooterItems = getCollectedSidebarFooterItems(set) ?? [

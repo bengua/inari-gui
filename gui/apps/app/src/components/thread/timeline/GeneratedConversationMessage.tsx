@@ -112,7 +112,7 @@ interface GeneratedConversationTitleArgs {
 }
 
 const CLOUD_CHILD_NOTICE_HEADER =
-  /^\[Cloudroom\] Child thread .* (completed:|was interrupted\.|failed or its outcome is uncertain\.)/;
+  /^\[Inari\] Child thread .* (completed:|was interrupted\.|failed or its outcome is uncertain\.)/;
 
 function cloudChildNoticeRange(text: string): [number, number] | null {
   const header = CLOUD_CHILD_NOTICE_HEADER.exec(text);
@@ -334,7 +334,7 @@ function generatedConversationEmptyText(
     case "agent":
       return "Sent an agent message";
     case "system":
-      return "Sent a Cloudroom system message";
+      return "Sent an Inari system message";
   }
 }
 

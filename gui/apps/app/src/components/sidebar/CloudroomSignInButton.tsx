@@ -38,12 +38,13 @@ export function CloudroomSignInButton() {
   const checking = status.isPending;
   const account = status.data?.account;
   const signingIn = status.data?.signingIn === true;
-  const label = checking || account ? "Account" : signingIn ? "Cancel login" : "Set up Cloudroom";
-  const tooltip = account ? `Account (${account.email})${setupDone ? "" : " · Finish setup"}` : signingIn ? "Cancel login" : checking ? "Checking your account" : "Set up Cloudroom";
+  const label = checking || account ? "Account" : signingIn ? "Cancel login" : "Set up Inari";
+  const tooltip = account ? `Account (${account.email})${setupDone ? "" : " · Finish setup"}` : signingIn ? "Cancel login" : checking ? "Checking your account" : "Set up Inari";
   const button = <Button variant="ghost" className={cn(FOOTER_ICON_BUTTON_CLASS, "data-[state=open]:bg-state-active data-[state=open]:text-foreground")} aria-label={label} disabled={action.isPending || checking} onClick={account ? undefined : () => (signingIn ? action.mutate("cancel") : openSetup(true))}>
     {checking || signingIn || action.isPending ? <Icon name="Loading" className="animate-spin" aria-hidden /> : <Icon name="UserRound" aria-hidden />}
     {!checking && !signingIn && (!account || !setupDone) && <span className={cn("absolute right-1.5 top-1.5 size-1.5 rounded-full", account ? "bg-primary" : "bg-destructive")} aria-hidden />}
   </Button>;
+  if (status.data?.selfHosted) return null;
   return <SidebarMenuItem data-footer-item="cloudroom-account">
     <Popover open={menuOpen} onOpenChange={setMenuOpen}>
       <Tooltip>

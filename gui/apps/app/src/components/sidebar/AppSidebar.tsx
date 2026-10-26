@@ -46,6 +46,7 @@ import {
   useIndexedAppCommandHandlers,
 } from "@/components/commands/AppCommandProvider";
 import { useRouteState } from "@/hooks/useRouteState";
+import { FoxMascot } from "@/components/FoxMascot";
 import { SidebarNavigationRegion } from "./SidebarNavigationRegion";
 
 const NEW_THREAD_PANE_CONTENT = { kind: "new-thread" } as const;
@@ -237,6 +238,7 @@ export function AppSidebar({
   const body = (
     <>
       <SidebarTopReserveRow testId="app-sidebar-top-reserve-row" />
+      {!isCompactViewport ? <FoxMascot variant="sidebar" /> : null}
       <SidebarNavigationRegion
         compactCustomizeMode={isCompactCustomizeModeActive}
         onCompactCustomizeModeChange={setCompactCustomizeMode}

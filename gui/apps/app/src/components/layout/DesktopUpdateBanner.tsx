@@ -112,7 +112,7 @@ export function DesktopUpdateBanner() {
       <span className="min-w-0 flex-1 truncate">
         {ready ? (
           <>
-            <strong>A new version of Cloudroom is ready.</strong> Restart to
+            <strong>A new version of Inari is ready.</strong> Restart to
             update.{" "}
             {desktopInfo.installNeedsPassword
               ? "Enter your Mac password once, and future updates install by themselves."
@@ -120,7 +120,7 @@ export function DesktopUpdateBanner() {
           </>
         ) : (
           <>
-            <strong>Cloudroom {version} is available.</strong> You have{" "}
+            <strong>Inari {version} is available.</strong> You have{" "}
             {desktopInfo.version}. Download it to get the latest fixes.
           </>
         )}

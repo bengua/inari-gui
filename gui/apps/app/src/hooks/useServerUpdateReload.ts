@@ -23,7 +23,7 @@ export function useServerUpdateReload(): void {
       window.location.reload();
       return;
     }
-    appToast.message("Cloudroom was updated", {
+    appToast.message("Inari was updated", {
       id: TOAST_ID,
       duration: Infinity,
       description: `Reload to use ${version}.`,

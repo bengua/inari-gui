@@ -239,7 +239,7 @@ export function ProjectSelector({
                 heading={
                   suggestions ? (
                     <>
-                      In Cloudroom{" "}
+                      In Inari{" "}
                       <span className="font-normal opacity-70">
                         {projects.length}
                       </span>
@@ -382,7 +382,7 @@ function RepoSuggestionsGroup({
   return (
     <CommandGroup>
       <div className="flex items-center gap-1 px-2 pb-1.5 pt-1 text-xs font-medium text-muted-foreground">
-        <span className="mr-auto whitespace-nowrap">Not in Cloudroom yet</span>
+        <span className="mr-auto whitespace-nowrap">Not in Inari yet</span>
         {REPO_FILTERS.map(({ id, label }) => (
           <button
             key={id}

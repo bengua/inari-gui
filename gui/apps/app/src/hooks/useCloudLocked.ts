@@ -12,7 +12,7 @@ export function useCloudLocked(): boolean {
 
 export function showCloudSignIn(): void {
   appToast.message("Sign in to use Cloud", {
-    description: "Cloud agents need a Cloudroom account. Sign in or create one for free.",
+    description: "Cloud agents need an Inari account. Sign in or create one for free.",
     action: { label: "Sign in", onClick: () => { void sdk.cloudroom.signIn().then(({ url }) => openUrlInExternalBrowser(url), (error: Error) => appToast.error(error.message)); } },
   });
 }

@@ -14,7 +14,7 @@ import { useHostProviderCliStatus } from "@/hooks/queries/system-queries";
 import { useThread } from "@/hooks/queries/thread-queries";
 import { sdk } from "@/lib/sdk";
 
-const MISSING_CLI = /Cloudroom could not find the (Claude Code|Codex) CLI/;
+const MISSING_CLI = /Inari could not find the (Claude Code|Codex) CLI/;
 const PROVIDERS = { "Claude Code": "claude-code", Codex: "codex" } as const;
 
 export function missingProviderCli(detail: string | null) {

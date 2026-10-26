@@ -45,6 +45,7 @@ interface RootComposeSecondaryContentProps {
   footer?: ReactNode;
   children: ReactNode;
   compactScrollContent: ReactNode;
+  compactMascot?: ReactNode;
   contentClassName?: string;
   isSecondaryPanelOpen: boolean;
   onToggleSecondaryPanel: () => void;
@@ -68,6 +69,7 @@ export function RootComposeSecondaryContent({
   footer,
   children,
   compactScrollContent,
+  compactMascot,
   contentClassName,
   isSecondaryPanelOpen,
   onToggleSecondaryPanel,
@@ -116,6 +118,7 @@ export function RootComposeSecondaryContent({
         >
           <CompactHeaderVersionMark />
           <RootComposeCompactHome composer={children}>
+            {compactMascot}
             {compactScrollContent}
             <PluginHomepageSections />
           </RootComposeCompactHome>
